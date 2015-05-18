@@ -19,11 +19,16 @@ vertexShaderSource = "\
    uniform vec4 surfaceSpecular;                      \n\
    uniform float surfaceShininess;                    \n\
    uniform vec4 surfaceAmbient;                       \n\
+   uniform vec4 velocity;                             \n\
+   uniform float time;                                \n\
                                                       \n\
    void main()                                        \n\
    {                                                  \n\
+      //Get the current Position                      \n\
+      vec4 pos = vPosition + time * velocity;         \n\
+                                                      \n\
       //Pass Position to Fragment Shader              \n\
-      gl_Position = modelViewMatrix * vPosition;      \n\
+      gl_Position = modelViewMatrix * pos;            \n\
                                                       \n\
       //Calculate light vector                        \n\
       vec3 L = normalize((gl_Position - lightVec).xyz);\n\

@@ -27,14 +27,14 @@ var Object = function(model_id, pos) {
 };
 
 
-Object.prototype.setVelocity(vx, vy, vz) {
+Object.prototype.setVelocity = function(vx, vy, vz) {
    if ( Array.isArray(vx) && vx.length == 3 ) {
       vz = vx[2];
       vy = vx[1];
       vx = vx[0];
    }
    
-   this.velocity = vec3(x, y, z);
+   this.velocity = vec3(vx, vy, vz);
 };
 
 
@@ -56,16 +56,9 @@ Object.prototype.draw = function(vBuffer, nBuffer, bufferItemSize) {
    gl.uniformMatrix4fv(modelViewLoc, false, flatten(modelViewMatrix));
    gl.uniformMatrix3fv(vecModelViewLoc, false, flatten(inverse(trim(modelViewMatrix, 3, 3), false)));
    
+   gl.uniform4fv(velocityLoc, flatten(vec4(this.velocity, 0)));
+   
    models[this.model].draw(vBuffer, nBuffer, bufferItemSize);
-   if (objSelected == this.id) {
-      var tempColor = vec4(0, 0, 0, 1);
-      tempColor[0] = 0.7;
-      drawBox(
-         vec4(boundingBox[0], boundingBox[1], boundingBox[2], 1),
-         vec4(boundingBox[3], boundingBox[4], boundingBox[5], 1),
-         tempColor
-      );
-   }
 };
 
 

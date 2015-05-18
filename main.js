@@ -31,6 +31,8 @@ var surfDiffuseLoc;
 var surfSpecularLoc;
 var shininessLoc;
 var surfAmbientLoc;
+var velocityLoc;
+var timeLoc;
 
 //Matrices to save transforms
 var worldViewMatrix;
@@ -126,11 +128,14 @@ window.onload = function init() {
    surfSpecularLoc = gl.getUniformLocation(program, "surfaceSpecular");
    shininessLoc = gl.getUniformLocation(program, "surfaceShininess");
    surfAmbientLoc = gl.getUniformLocation(program, "surfaceAmbient");
+   velocityLoc = gl.getUniformLocation(program, "velocity");
+   timeLoc = gl.getUniformLocation(program, "time");
+   gl.uniform1f(timeLoc, 0);
    
    //Create Bricks
    createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
    createRows(0, 10, 10, vec4(0, 0, 0, 1), vec4(17.9, 0, 0, 0), vec4(0, 0, 5.3, 0));
-   createObject(0, vec3(0, -20, 0));
+   obj = createObject(0, vec3(0, -20, 0));
    
    //Create Floor
    //createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.5, 0.9, 0.5, 1.0), vec4(0.8, 0.8, 0.8, 1.0), 10);
