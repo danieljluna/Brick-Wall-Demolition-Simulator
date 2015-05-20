@@ -52,6 +52,8 @@ window.onload = function init() {
    canvas = document.getElementById( "canvas" );
    offset = canvas.getBoundingClientRect();
    
+   setUpInput();
+   
    gl = WebGLUtils.setupWebGL( canvas );
    if ( !gl ) { alert( "WebGL isn't available" ); }
    
@@ -135,10 +137,8 @@ window.onload = function init() {
    //Create Bricks
    createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
    createRows(0, 10, 10, vec4(0, 0, 0, 1), vec4(17.9, 0, 0, 0), vec4(0, 0, 5.3, 0));
-   obj = createObject(0, vec3(0, -20, 0));
    
-   //Create Floor
-   //createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.5, 0.9, 0.5, 1.0), vec4(0.8, 0.8, 0.8, 1.0), 10);
+   createConeExplosion(vec3(0, -20, 0), vec3(0, 20, 0), 180, 10);
    
    render();
 };
@@ -157,30 +157,10 @@ function render() {
 };
 
 
-// Add rows of an object defined by offests
-function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
-   
-   var offset = origin;
-   for (var r = 0; r < rows; ++r) {
-      
-      for (var obj = 0; obj < perRow; ++obj) {
-         
-         if ((obj + 1) % 2 == 0) {
-            finalOffset = add(scaleVec(-Math.floor((obj + 1) / 2), objOffset), offset);
-         } else {
-            finalOffset = add(scaleVec(Math.floor((obj + 1) / 2), objOffset), offset);
-         }
-         
-         createObject(model, finalOffset);
-      }
-      
-      if (r == 0) {
-         offset = add(scaleVec(0.5, objOffset), rowOffset);
-      } else if (r % 2 == 0) {
-         offset = add(scaleVec(0.5, objOffset), add(offset, rowOffset));
-      } else {
-         offset = add(scaleVec(-0.5, objOffset), add(offset, rowOffset));
-      }
+function createConeExplosion(source, direction, angle, magnitude) {
+   for (obj = 0; obj < objects.length; ++obj) {
+      var velocity = subtract(objects[obj].position, source)
+      velocity = scaleVec(magnitude / Math.sqrt(dot(velocity, velocity)), velocity);
+      objects[obj].setVelocity(velocity);
    }
-   
-}
+};
