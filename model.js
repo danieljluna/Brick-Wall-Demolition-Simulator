@@ -77,11 +77,25 @@ Model.prototype.loadModel = function(coordArray, polyArray) {
       //Store Point Normal
       this.vertNormals.push(avgNormal);
    }
+   
+   var v = [];
+   var vN = [];
+   var sN = [];
+   for (var i = 0; i < this.indices.length; ++i) {
+      for (var j = 0; j < this.vertices[0].length; ++j) {
+         v.push(this.vertices[this.indices[i]][j])
+         vN.push(this.vertNormals[this.indices[i]][j])
+         sN.push(this.surfNormals[this.indices[Math.floor(i / 3)]][j])
+      }
+   }
+   this.vertices = v;
+   this.vertNormals = vN;
+   this.surfNormals = sN;
 };
 
 
 // Fills the buffers with the appropriate data for drawing
-Model.prototype.draw = function(vBuffer, nBuffer, bufferItemSize) {
+Model.prototype.draw = function(vBuffer, nBuffer) {
    // If this model is not currently loaded, loads this model. Then draws
    
    if (modelLoaded != this.id) {
@@ -93,37 +107,18 @@ Model.prototype.draw = function(vBuffer, nBuffer, bufferItemSize) {
       gl.uniform1f(shininessLoc, this.surfaceShininess);
       gl.uniform4fv(surfAmbientLoc, flatten(this.surfaceAmbient));
       
-      var temp = [];
-      for (var i = 0; i < this.indices.length; ++i) {
-         for (var j = 0; j < this.vertices[0].length; ++j) {
-            temp.push(this.vertices[this.indices[i]][j]);
-         }
-      }
-      
       //Buffer in vertices
       gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(temp), gl.STATIC_DRAW);
-      
-      var temp = [];
-      //Depending on shading, copy in proper normals
-      if (this.smoothShaded) {
-         for (var i = 0; i < this.indices.length; ++i) {
-            for (var j = 0; j < this.vertNormals[0].length; ++j) {
-               temp.push(this.vertNormals[this.indices[i]][j]);
-            }
-         }
-      } else {
-         //Copy just as many surface normals as vertices into the nBuffer
-         for (var i = 0; i < this.indices.length; ++i) {
-            for (var j = 0; j < this.surfNormals[0].length; ++j) {
-               temp.push(this.surfNormals[Math.floor(i / 3)][j]);
-            }
-         }
-      }
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
       
       //Bind the nBuffer for manipulation
       gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(temp), gl.STATIC_DRAW);
+      //Depending on shading, copy in proper normals
+      if (this.smoothShaded) {
+         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertNormals), gl.STATIC_DRAW);
+      } else {
+         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.surfNormals), gl.STATIC_DRAW);
+      }
    }
    
    //Draw triangles

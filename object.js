@@ -46,7 +46,7 @@ Object.prototype.setModel = function(model_id) {
 };
 
 
-Object.prototype.draw = function(vBuffer, nBuffer, bufferItemSize) {
+Object.prototype.draw = function(vBuffer, nBuffer) {
    // Draws the object using it's current settings
    
    //Send Shader modelViewMatrix and vecModelViewMatrix
@@ -58,7 +58,7 @@ Object.prototype.draw = function(vBuffer, nBuffer, bufferItemSize) {
    
    gl.uniform4fv(velocityLoc, flatten(vec4(this.velocity, 0)));
    
-   models[this.model].draw(vBuffer, nBuffer, bufferItemSize);
+   models[this.model].draw(vBuffer, nBuffer);
 };
 
 

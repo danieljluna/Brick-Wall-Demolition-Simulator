@@ -18,7 +18,6 @@ var gl;
 //Buffer and Point Data
 var vBuffer;
 var nBuffer;
-var iBuffer;
 var pointSize = 16;
 
 //Holds whether we are using perspective
@@ -95,11 +94,6 @@ window.onload = function init() {
    //Enable normal attribute
    gl.enableVertexAttribArray(vNormal);
    
-   //Create index buffer
-   iBuffer = gl.createBuffer();
-   //Bind that buffer to gl's ELEMENT_ARRAY_BUFFER
-   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffer);
-   
    //Store the index of the shader's modelViewMatrix
    modelViewLoc = gl.getUniformLocation(program, "modelViewMatrix");
    //Create worldView Matrix
@@ -152,7 +146,7 @@ function render() {
    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
    
    for (var obj = 0; obj < objects.length; ++obj) {
-      objects[obj].draw(vBuffer, nBuffer, bufferItemSize);
+      objects[obj].draw(vBuffer, nBuffer);
    }
    
 };
