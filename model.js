@@ -85,7 +85,7 @@ Model.prototype.loadModel = function(coordArray, polyArray) {
       for (var j = 0; j < this.vertices[0].length; ++j) {
          v.push(this.vertices[this.indices[i]][j])
          vN.push(this.vertNormals[this.indices[i]][j])
-         sN.push(this.surfNormals[this.indices[Math.floor(i / 3)]][j])
+         sN.push(this.surfNormals[Math.floor(i / 3)][j])
       }
    }
    this.vertices = v;
