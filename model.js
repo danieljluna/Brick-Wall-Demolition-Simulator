@@ -3,7 +3,7 @@
 //
 
 var models = [];
-
+var modelLoaded = -1;
 
 // Model object
 var Model = function(coords, polys, diffuse, specular, shininess) {
@@ -82,71 +82,52 @@ Model.prototype.loadModel = function(coordArray, polyArray) {
 
 // Fills the buffers with the appropriate data for drawing
 Model.prototype.draw = function(vBuffer, nBuffer, bufferItemSize) {
-   //Updates shader shading variables
-   gl.uniform4fv(surfDiffuseLoc, flatten(this.surfaceDiffuse));
-   gl.uniform4fv(surfSpecularLoc, flatten(this.surfaceSpecular));
-   gl.uniform1f(shininessLoc, this.surfaceShininess);
-   gl.uniform4fv(surfAmbientLoc, flatten(this.surfaceAmbient));
+   // If this model is not currently loaded, loads this model. Then draws
    
-   
-   //Stores the total vertices currently in the buffer
-   var vertsInBuffer = 0;
-   
-   //Constant holding points in a triangle
-   var pointsInTriangle = 3;
-   
-   //For as many buffer fills as we need to draw every vertex:
-   for (var vertsLoaded = 0; vertsLoaded < this.indices.length; 
-                             vertsLoaded += vertsInBuffer) {
-      //Consider our buffer empty
-      vertsInBuffer = 0;
+   if (modelLoaded != this.id) {
+      modelLoaded = this.id;
       
-      //Bind the vBuffer for manipulation
+      //Updates shader shading variables
+      gl.uniform4fv(surfDiffuseLoc, flatten(this.surfaceDiffuse));
+      gl.uniform4fv(surfSpecularLoc, flatten(this.surfaceSpecular));
+      gl.uniform1f(shininessLoc, this.surfaceShininess);
+      gl.uniform4fv(surfAmbientLoc, flatten(this.surfaceAmbient));
+      
+      var temp = [];
+      for (var i = 0; i < this.indices.length; ++i) {
+         for (var j = 0; j < this.vertices[0].length; ++j) {
+            temp.push(this.vertices[this.indices[i]][j]);
+         }
+      }
+      
+      //Buffer in vertices
       gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(temp), gl.STATIC_DRAW);
       
-      //While we have verts to copy, are still drawing triangles,
-      //   and room in the buffer to continue copying them in:
-      while ((vertsLoaded + vertsInBuffer + pointsInTriangle <= 
-                this.indices.length) && (vertsInBuffer + pointsInTriangle <= 
-                bufferItemSize)) {
-         
-         //Copy the next line into the buffer. This is done in a 
-         //   simple for loop.
-         for (var j = 0; j < pointsInTriangle; ++j) {
-            gl.bufferSubData(
-               gl.ARRAY_BUFFER,
-               pointSize * vertsInBuffer,
-               flatten(this.vertices[this.indices[vertsLoaded + vertsInBuffer]])
-            );
-            ++vertsInBuffer;
+      var temp = [];
+      //Depending on shading, copy in proper normals
+      if (this.smoothShaded) {
+         for (var i = 0; i < this.indices.length; ++i) {
+            for (var j = 0; j < this.vertNormals[0].length; ++j) {
+               temp.push(this.vertNormals[this.indices[i]][j]);
+            }
+         }
+      } else {
+         //Copy just as many surface normals as vertices into the nBuffer
+         for (var i = 0; i < this.indices.length; ++i) {
+            for (var j = 0; j < this.surfNormals[0].length; ++j) {
+               temp.push(this.surfNormals[Math.floor(i / 3)][j]);
+            }
          }
       }
       
       //Bind the nBuffer for manipulation
       gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
-      
-      //Depending on shading, copy in proper normals
-      if (this.smoothShaded) {
-         //Copy just as many vertex normals as vertices into the nBuffer
-         for (var j = 0; j < vertsInBuffer; ++j)
-            gl.bufferSubData(
-               gl.ARRAY_BUFFER,
-               pointSize * j,
-               flatten(this.vertNormals[this.indices[vertsLoaded + j]])
-            );
-      } else {
-         //Copy just as many surface normals as vertices into the nBuffer
-         for (var j = 0; j < vertsInBuffer; ++j)
-            gl.bufferSubData(
-               gl.ARRAY_BUFFER,
-               pointSize * j,
-               flatten(this.surfNormals[Math.floor((vertsLoaded + j) / 3)])
-            );
-      }
-      
-      //Draw triangles
-      gl.drawArrays(gl.TRIANGLES, 0, vertsInBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(temp), gl.STATIC_DRAW);
    }
+   
+   //Draw triangles
+   gl.drawArrays(gl.TRIANGLES, 0, this.indices.length);
 };
 
 

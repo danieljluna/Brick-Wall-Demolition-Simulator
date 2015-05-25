@@ -18,7 +18,7 @@ var gl;
 //Buffer and Point Data
 var vBuffer;
 var nBuffer;
-var bufferItemSize = 5000;
+var iBuffer;
 var pointSize = 16;
 
 //Holds whether we are using perspective
@@ -75,8 +75,6 @@ window.onload = function init() {
    vBuffer = gl.createBuffer();
    //Bind that buffer to gl's ARRAY_BUFFER
    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-   //Create space in the ARRAY_BUFFER for vertices drawn statically
-   gl.bufferData(gl.ARRAY_BUFFER, pointSize*bufferItemSize, gl.STATIC_DRAW);
    
    //Store the address of the shader's vPosition attribute
    var vPosition = gl.getAttribLocation(program, "vPosition");
@@ -89,8 +87,6 @@ window.onload = function init() {
    nBuffer = gl.createBuffer();
    //Bind that buffer to gl's ARRAY_BUFFER
    gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
-   //Create space in the ARRAY_BUFFER for normals statically
-   gl.bufferData(gl.ARRAY_BUFFER, pointSize*bufferItemSize, gl.STATIC_DRAW);
    
    //Store the address of the shader's vVertNormal attribute
    var vNormal = gl.getAttribLocation(program, "vNormal");
@@ -98,6 +94,11 @@ window.onload = function init() {
    gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
    //Enable normal attribute
    gl.enableVertexAttribArray(vNormal);
+   
+   //Create index buffer
+   iBuffer = gl.createBuffer();
+   //Bind that buffer to gl's ELEMENT_ARRAY_BUFFER
+   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffer);
    
    //Store the index of the shader's modelViewMatrix
    modelViewLoc = gl.getUniformLocation(program, "modelViewMatrix");
