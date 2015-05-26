@@ -131,9 +131,10 @@ window.onload = function init() {
    
    //Create Bricks
    createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
-   createRows(0, 10, 10, vec4(0, 0, 0, 1), vec4(17.9, 0, 0, 0), vec4(0, 0, 5.3, 0));
+   createRows(0, 10, 10, vec4(0, 0, 0, 1), vec4(18.1, 0, 0, 0), vec4(0, 0, 5.5, 0));
    
-   createConeExplosion(vec3(0, -20, 0), vec3(0, 20, 0), 180, 10);
+   var floor = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
+   createObject(floor, vec4(0, 0, -2.4));
    
    render();
 };
