@@ -18,6 +18,7 @@ var Object = function(model_id, pos) {
    
    this.position = vec3(pos[0], pos[1], pos[2]);
    this.velocity = vec3(0, 0, 0);
+   this.initTime = 0;
    
    //Holds transform from model to world
    this.modelWorldMatrix = translate(pos[0], pos[1], pos[2]);
@@ -68,3 +69,32 @@ function createObject(model_id, transformMatrix, smooth) {
    return obj.id;
 };
 
+
+
+// Add rows of an object defined by offests
+function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
+   
+   var offset = origin;
+   for (var r = 0; r < rows; ++r) {
+      
+      for (var obj = 0; obj < perRow; ++obj) {
+         
+         if ((obj + 1) % 2 == 0) {
+            finalOffset = add(scaleVec(-Math.floor((obj + 1) / 2), objOffset), offset);
+         } else {
+            finalOffset = add(scaleVec(Math.floor((obj + 1) / 2), objOffset), offset);
+         }
+         
+         createObject(model, finalOffset);
+      }
+      
+      if (r == 0) {
+         offset = add(scaleVec(0.5, objOffset), rowOffset);
+      } else if (r % 2 == 0) {
+         offset = add(scaleVec(0.5, objOffset), add(offset, rowOffset));
+      } else {
+         offset = add(scaleVec(-0.5, objOffset), add(offset, rowOffset));
+      }
+   }
+   
+}

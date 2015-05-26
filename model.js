@@ -193,32 +193,3 @@ function calculateNormal(polygon, coordArray) {
    
    return result;
 };
-
-
-// Add rows of an object defined by offests
-function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
-   
-   var offset = origin;
-   for (var r = 0; r < rows; ++r) {
-      
-      for (var obj = 0; obj < perRow; ++obj) {
-         
-         if ((obj + 1) % 2 == 0) {
-            finalOffset = add(scaleVec(-Math.floor((obj + 1) / 2), objOffset), offset);
-         } else {
-            finalOffset = add(scaleVec(Math.floor((obj + 1) / 2), objOffset), offset);
-         }
-         
-         createObject(model, finalOffset);
-      }
-      
-      if (r == 0) {
-         offset = add(scaleVec(0.5, objOffset), rowOffset);
-      } else if (r % 2 == 0) {
-         offset = add(scaleVec(0.5, objOffset), add(offset, rowOffset));
-      } else {
-         offset = add(scaleVec(-0.5, objOffset), add(offset, rowOffset));
-      }
-   }
-   
-}
