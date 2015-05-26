@@ -6,10 +6,7 @@ var objects = [];
 var objSelected = -1;
 var defaultConeOrigin = [0,-10,0];
 var yAxis = [0,1,0];
-<<<<<<< HEAD
 //THIS IS THE ONE LINE IM TRYING RIGHT NOW AT 9:36 PM
-=======
->>>>>>> parent of 876cc83... One line test.
 
 // Object Class
 var Object = function(model_id, pos) {
