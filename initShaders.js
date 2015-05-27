@@ -1,4 +1,4 @@
-//  djluna: Daniel Luna
+//  djluna: Daniel Luna and jbaden: John Baden
 //  initShaders.js
 //
 
