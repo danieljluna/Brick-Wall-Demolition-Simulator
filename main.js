@@ -136,7 +136,7 @@ window.onload = function init() {
    var floor = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
    createObject(floor, vec4(0, 0, -2.5));
    
-   createConeExplosion(vec3(0, -20, 0), vec3(0, 20, 0), 60, 1);
+   createConeExplosion(vec3(0, -20, 0), vec3(0, 20, 0), angleSlider.value, 5);
    
    render();
 };
