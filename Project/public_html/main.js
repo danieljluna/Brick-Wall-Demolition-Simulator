@@ -133,7 +133,7 @@ window.onload = function init() {
    createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
    createRows(0, 10, 10, vec4(0, 0, 0, 1), vec4(17.9, 0, 0, 0), vec4(0, 0, 5.3, 0));
    
-   createConeExplosion(vec3(0, -20, 0), vec3(0, 20, 0), 180, 10);
+   createConeExplosion(vec3(0, -20, 0), vec3(0, 20, 0), 60, 1);
    
    render();
 };
@@ -154,8 +154,25 @@ function render() {
 
 function createConeExplosion(source, direction, angle, magnitude) {
    for (obj = 0; obj < objects.length; ++obj) {
+      if(coneCollision(direction, angle, objects[obj].position) == false)
+      {
+        var velocity = subtract(objects[obj].position, source);
+        velocity = scaleVec(magnitude / Math.sqrt(dot(velocity, velocity)), velocity);
+        objects[obj].setVelocity(velocity);
+      }
+   }
+};
+
+//coneCollision(coneDirection,angleOfCone, brickCOM)
+
+
+/*
+ * function createConeExplosion(source, direction, angle, magnitude) {
+   for (obj = 0; obj < objects.length; ++obj) {
+       
       var velocity = subtract(objects[obj].position, source)
       velocity = scaleVec(magnitude / Math.sqrt(dot(velocity, velocity)), velocity);
       objects[obj].setVelocity(velocity);
    }
 };
+ */
