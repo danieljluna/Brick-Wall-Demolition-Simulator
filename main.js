@@ -134,7 +134,7 @@ window.onload = function init() {
    createRows(0, 10, 10, vec4(0, 0, 0, 1), vec4(18.1, 0, 0, 0), vec4(0, 0, 5.5, 0));
    
    var floor = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
-   createObject(floor, vec4(0, 0, -2.4));
+   createObject(floor, vec4(0, 0, -2.5));
    
    render();
 };
