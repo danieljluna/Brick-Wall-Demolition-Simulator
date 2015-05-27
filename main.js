@@ -1,5 +1,5 @@
 /*
- * djluna: Daniel Luna
+ * djluna: Daniel Luna and John Baden
  * 24 April 2015
  * This is the main javascript file responsible for the final program.
  *    This program uses a series of text boxes to allow the user to 
