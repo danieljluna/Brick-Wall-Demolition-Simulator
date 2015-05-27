@@ -4,11 +4,9 @@
 
 var objects = [];
 var objSelected = -1;
-var defaultConeOrigin = [0,-10,0];
-var yAxis = [0,1,0];
 
 // Object Class
-var Object = function(model_id, pos) {
+var Object = function(model_id, pos, initTime, smooth) {
    // Creates an object with the given model, transformationMatrix, and
    //    uses the boolean 'smooth' to denote if the object should use
    //    flat or smooth shading.
@@ -20,7 +18,9 @@ var Object = function(model_id, pos) {
    
    this.position = vec3(pos[0], pos[1], pos[2]);
    this.velocity = vec3(0, 0, 0);
-   this.initTime = 0;
+   this.initTime = Math.max(initTime, 0);
+   this.smooth = (!(!(smooth)));
+   this.dynamic = false;
    
    //Holds transform from model to world
    this.modelWorldMatrix = translate(pos[0], pos[1], pos[2]);
@@ -38,6 +38,11 @@ Object.prototype.setVelocity = function(vx, vy, vz) {
    }
    
    this.velocity = vec3(vx, vy, vz);
+   if (dot(this.velocity, this.velocity) != 0) {
+      this.dynamic = true;
+   } else {
+      this.dynamic = false;
+   }
 };
 
 
@@ -60,14 +65,15 @@ Object.prototype.draw = function(vBuffer, nBuffer) {
    gl.uniformMatrix3fv(vecModelViewLoc, false, flatten(inverse(trim(modelViewMatrix, 3, 3), false)));
    
    gl.uniform4fv(velocityLoc, flatten(vec4(this.velocity, 0)));
+   gl.uniform1f(dynamicLoc, this.dynamic);
    
    models[this.model].draw(vBuffer, nBuffer);
 };
 
 
 // Create Object and return its id
-function createObject(model_id, transformMatrix, smooth) {
-   var obj = new Object(model_id, transformMatrix, smooth);
+function createObject(model_id, transformMatrix, initTime, smooth) {
+   var obj = new Object(model_id, transformMatrix, initTime, smooth);
    return obj.id;
 };
 
@@ -91,7 +97,7 @@ function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
       }
       
       if (r == 0) {
-         offset = add(scaleVec(0.5, objOffset), rowOffset);
+         offset = add(add(scaleVec(0.5, objOffset), rowOffset), origin);
       } else if (r % 2 == 0) {
          offset = add(scaleVec(0.5, objOffset), add(offset, rowOffset));
       } else {
@@ -103,34 +109,20 @@ function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
 
 
 
-function coneCollision(coneDirection,angleOfCone, brickCOM)
+function coneCollision(coneSource, coneDirection, angleOfCone, brickCOM)
 {
     if(angleOfCone > 90)
     {
         console.log("the hell is wrong with your cone?");
         return;
     }
-    //cone direction vector
-    var a = coneDirection[0] - defaultConeOrigin[0];
-    var b = coneDirection[1] - defaultConeOrigin[1];
-    var c = coneDirection[2] - defaultConeOrigin[2];
-    var coneVector = new vec3(a, b, c);
-    
     // vector from cone origin to COM of brick
-    a = brickCOM[0] - defaultConeOrigin[0];
-    b = brickCOM[1] - defaultConeOrigin[1];
-    c = brickCOM[2] - defaultConeOrigin[2];
-    var brickVector = new vec3(a, b, c);
+    var brickVector = normalize(subtract(brickCOM, coneSource));
     
-    //finding the magnitude of each
-    var coneMag = Math.sqrt(Math.pow(coneVector[0],2) + Math.pow(coneVector[1],2)
-            + Math.pow(coneVector[2],2));
-    var brickMag = Math.sqrt(Math.pow(brickVector[0],2) + Math.pow(brickVector[1],2)
-            + Math.pow(brickVector[2],2));
     //gets cosine theta
-    var cosTheta = (dot(coneVector, brickVector))/(coneMag * brickMag);
+    var cosTheta = dot(normalize(coneDirection), brickVector);
     //Math.acos returns a value in radians, so im converting it to degrees here.
-    var angle = (Math.acos(cosTheta)) * (180/Math.PI);
+    var angle = (Math.acos(cosTheta)) * (180 / Math.PI);
     //--------------------comparing values
     if(angleOfCone < angle)
     {

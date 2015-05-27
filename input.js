@@ -3,32 +3,32 @@
 
 var timeSlider;
 var timeLabel;
+var angleSlider;
+var angleLabel;
 
 function setUpInput() {
    timeSlider = document.getElementById("timeSlider");
    timeLabel = document.getElementById("timeLabel");
+   timeSlider.onchange = updateTimeSlider;
    angleSlider = document.getElementById("angleSlider");
-   angleSlider.onchange = updateAngle;
-   timeSlider.onchange = updateSlider;
+   angleLabel = document.getElementById("angleLabel");
+   angleSlider.onchange = updateAngleSlider;
 };
 
-function updateSlider() {
+function updateTimeSlider() {
    timeLabel.innerHTML = timeSlider.value.toString();
    gl.uniform1f(timeLoc, timeSlider.value);
    render();
 };
 
-function updateAngle()
+function updateAngleSlider()
 {
-    console.log("hello there!");
-    console.log(angleSlider.value);
-    for (obj = 0; obj < objects.length; ++obj) 
-    {
-        objects[obj].setVelocity([0,0,0]);
-    }
-    createConeExplosion(vec3(0, -20, 0), vec3(0, 20, 0), angleSlider.value, 5);
-    timeSlider.value = 0;
-    timeLabel.innerHTML = timeSlider.value.toString();
-    updateSlider();
-    //render();
+   angleLabel.innerHTML = angleSlider.value.toString();
+   gl.uniform1f(timeLoc, timeSlider.value);
+   for (obj = 0; obj < objects.length; ++obj) 
+   {
+      objects[obj].setVelocity([0,0,0]);
+   }
+   createConeExplosion(vec3(0, -10, 3.24), vec3(0, 1, 0), angleSlider.value, 5);
+   updateTimeSlider();
 }

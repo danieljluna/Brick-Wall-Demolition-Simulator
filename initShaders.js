@@ -21,14 +21,20 @@ vertexShaderSource = "\
    uniform vec4 surfaceAmbient;                       \n\
    uniform vec4 velocity;                             \n\
    uniform float time;                                \n\
+   uniform bool dynamic;                              \n\
                                                       \n\
    void main()                                        \n\
    {                                                  \n\
       //Get the current Position                      \n\
       vec4 pos = vPosition + time * velocity;         \n\
+      if (dot(velocity, velocity) != 0.0) {             \n\
+         vec4 gravity = vec4(0, 0, -9.81, 0);         \n\
+         pos += 0.5 * time * gravity;                 \n\
+      }                                               \n\
                                                       \n\
       //Pass Position to Fragment Shader              \n\
-      gl_Position = modelViewMatrix * pos;            \n\
+      vec4 temp = modelViewMatrix * pos;              \n\
+      gl_Position = (1.0/temp[4])*temp*vec4(1,1,0.1,1);\n\
                                                       \n\
       //Calculate light vector                        \n\
       vec3 L = normalize((gl_Position - lightVec).xyz);\n\

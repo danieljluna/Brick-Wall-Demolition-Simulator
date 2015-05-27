@@ -32,6 +32,7 @@ var shininessLoc;
 var surfAmbientLoc;
 var velocityLoc;
 var timeLoc;
+var dynamicLoc;
 
 //Matrices to save transforms
 var worldViewMatrix;
@@ -98,10 +99,10 @@ window.onload = function init() {
    modelViewLoc = gl.getUniformLocation(program, "modelViewMatrix");
    //Create worldView Matrix
    worldViewMatrix = lookAt(vec3(0, 0, 0), scaleVec(.008, vec3(eyeVec)), vec3(0, 0, 1));
-   worldViewMatrix = mult(worldViewMatrix, scale(0.008, 0.008, 0.008));
+   worldViewMatrix = mult(worldViewMatrix, scale(0.075, 0.075, 0.075));
    //Create perspective Matrix
    perspectiveMatrix = mat4(1);
-   perspectiveMatrix[3][2] = 1 / 2;   //account for perspective
+   perspectiveMatrix[3][2] = 1 / 10;   //account for perspective
    
    //Store the index of the shader's vecModelViewMatrix
    vecModelViewLoc = gl.getUniformLocation(program, "vecModelViewMatrix");
@@ -127,16 +128,18 @@ window.onload = function init() {
    surfAmbientLoc = gl.getUniformLocation(program, "surfaceAmbient");
    velocityLoc = gl.getUniformLocation(program, "velocity");
    timeLoc = gl.getUniformLocation(program, "time");
+   dynamicLoc = gl.getUniformLocation(program, "dynamic");
    gl.uniform1f(timeLoc, 0);
    
    //Create Bricks
    createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
-   createRows(0, 10, 10, vec4(0, 0, 0, 1), vec4(18.1, 0, 0, 0), vec4(0, 0, 5.5, 0));
+   createRows(0, 10, 10, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
    
    var floor = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
-   createObject(floor, vec4(0, 0, -2.5));
+   createObject(floor, vec4(0, 0, 0));
    
-   createConeExplosion(vec3(0, -20, 0), vec3(0, 20, 0), angleSlider.value, 5);
+   resetObjects();
+   createConeExplosion(vec3(0, -1, 3.24), vec3(0, 1, 0), angleSlider.value, 5);
    
    render();
 };
@@ -155,12 +158,26 @@ function render() {
 };
 
 
-function createConeExplosion(source, direction, angle, magnitude) {
+function resetObjects() {
    for (obj = 0; obj < objects.length; ++obj) {
-      if(coneCollision(direction, angle, objects[obj].position) == false)
+      switch (objects[obj].model) {
+      case 0:  //For bricks
+         objects[obj].setVelocity([0,0,0]);
+         break;
+      case 1:  //For the floor
+      case 2:  //For the Splash Particles
+         break;
+      }
+   }
+}
+
+
+function createConeExplosion(source, direction, angle, magnitude) {
+   for (obj = 0; (objects[obj].model == 0); ++obj) {
+      if(coneCollision(source, direction, angle, objects[obj].position) == false)
       {
-        var velocity = subtract(objects[obj].position, source);
-        velocity = scaleVec(magnitude / Math.sqrt(dot(velocity, velocity)), velocity);
+        var velocity = normalize(subtract(objects[obj].position, source));
+        velocity = scaleVec(magnitude, velocity);
         objects[obj].setVelocity(velocity);
       }
    }
