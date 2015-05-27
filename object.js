@@ -4,6 +4,8 @@
 
 var objects = [];
 var objSelected = -1;
+var defaultConeOrigin = [0,-10,0];
+var yAxis = [0,1,0];
 
 // Object Class
 var Object = function(model_id, pos) {
@@ -97,4 +99,51 @@ function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
       }
    }
    
+}
+
+
+
+function coneCollision(coneDirection,angleOfCone, brickCOM)
+{
+    if(angleOfCone > 90)
+    {
+        console.log("the hell is wrong with your cone?");
+        return;
+    }
+    //cone direction vector
+    var a = coneDirection[0] - defaultConeOrigin[0];
+    var b = coneDirection[1] - defaultConeOrigin[1];
+    var c = coneDirection[2] - defaultConeOrigin[2];
+    var coneVector = new vec3(a, b, c);
+    
+    // vector from cone origin to COM of brick
+    a = brickCOM[0] - defaultConeOrigin[0];
+    b = brickCOM[1] - defaultConeOrigin[1];
+    c = brickCOM[2] - defaultConeOrigin[2];
+    var brickVector = new vec3(a, b, c);
+    
+    //finding the magnitude of each
+    var coneMag = Math.sqrt(Math.pow(coneVector[0],2) + Math.pow(coneVector[1],2)
+            + Math.pow(coneVector[2],2));
+    var brickMag = Math.sqrt(Math.pow(brickVector[0],2) + Math.pow(brickVector[1],2)
+            + Math.pow(brickVector[2],2));
+    //gets cosine theta
+    var cosTheta = (dot(coneVector, brickVector))/(coneMag * brickMag);
+    //Math.acos returns a value in radians, so im converting it to degrees here.
+    var angle = (Math.acos(cosTheta)) * (180/Math.PI);
+    //--------------------comparing values
+    if(angleOfCone < angle)
+    {
+        return true;
+    }
+    else if(angleOfCone > angle)
+    {
+        return false;
+    }
+    else
+    {
+        console.log("they're equal, returning true");
+        return true;
+        
+    }
 }
