@@ -21,7 +21,7 @@ var nBuffer;
 var pointSize = 16;
 
 //Holds whether we are using perspective
-var doPerspective = false;
+var doPerspective = true;
 
 //Stores the location of the modelViewMatrix in the shader
 var modelViewLoc;
@@ -42,7 +42,7 @@ var vecWorldViewMatrix;
 //Store canvas offset for canvas on page:
 var offset;
 
-var eyeVec = vec4(100, -100, 100, 0);
+var eyeVec = vec4(20, -100, 50, 0);
 
 //Stores clicking bounding box
 var boundingBox = [-75, 10, -20, 50, -12, 20];
@@ -102,7 +102,7 @@ window.onload = function init() {
    worldViewMatrix = mult(worldViewMatrix, scale(0.075, 0.075, 0.075));
    //Create perspective Matrix
    perspectiveMatrix = mat4(1);
-   perspectiveMatrix[3][2] = 1 / 10;   //account for perspective
+   perspectiveMatrix[3][2] = 1 / 3;   //account for perspective
    
    //Store the index of the shader's vecModelViewMatrix
    vecModelViewLoc = gl.getUniformLocation(program, "vecModelViewMatrix");
@@ -133,13 +133,13 @@ window.onload = function init() {
    
    //Create Bricks
    createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
-   createRows(0, 10, 10, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
+   createRows(0, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
    
    var floor = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
    createObject(floor, vec4(0, 0, 0));
    
    resetObjects();
-   createConeExplosion(vec3(0, -1, 3.24), vec3(0, 1, 0), angleSlider.value, 5);
+   createConeExplosion(vec3(0, -2, 0.45), vec3(0, 1, 1), angleSlider.value, 10);
    
    render();
 };
