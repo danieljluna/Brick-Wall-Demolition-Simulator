@@ -14,7 +14,7 @@ var zLabel;
 //default cone globals ---- source, direction, angle, magnitude
 var explosionSource;
 //+right,,+up
-var explosionDirection = vec3(0, 1, 0);
+var explosionDirection = vec3(0, 1, 1);
 
 var intervalID = 0;
 
@@ -43,7 +43,7 @@ function setUpInput() {
 
 
 function updateTimeSlider() {
-   timeLabel.innerHTML = timeSlider.value.toString();
+   timeLabel.innerHTML = timeSlider.value;
    gl.uniform1f(timeLoc, timeSlider.value);
    render();
 };
@@ -71,43 +71,25 @@ function playPress() {
 
 function updateAngleSlider()
 {
-   angleLabel.innerHTML = angleSlider.value.toString();
-   gl.uniform1f(timeLoc, timeSlider.value);
-   for (obj = 0; obj < objects.length; ++obj) 
-   {
-      objects[obj].setVelocity([0,0,0]);
-   }
-   createConeExplosion(vec3(0, -2, 0.45), vec3(0, 1, 1), angleSlider.value, 15);
-   updateTimeSlider();
+   angleLabel.innerHTML = angleSlider.value;
+   resetObjects();
 }
 
 function updateXSlider()
 {
    explosionDirection[0] = xSlider.value;
-   console.log(explosionDirection);
-   xLabel.innerHTML = xSlider.value.toString();
-   gl.uniform1f(timeLoc, timeSlider.value);
-   for (obj = 0; obj < objects.length; ++obj) 
-   {
-      objects[obj].setVelocity([0,0,0]);
-   }
-   createConeExplosion(vec3(0, -2, 0.45), explosionDirection, angleSlider.value, 10);
-   console.log(explosionDirection);
-   updateTimeSlider();
+   //console.log(explosionDirection);
+   xLabel.innerHTML = xSlider.value;
+   resetObjects();
+   //console.log(explosionDirection);
 }
 
 function updateZSlider()
 {
    explosionDirection[2] = zSlider.value;
-   console.log(explosionDirection);
+   //console.log(explosionDirection);
    zLabel.innerHTML = zSlider.value.toString();
-   gl.uniform1f(timeLoc, timeSlider.value);
-   for (obj = 0; obj < objects.length; ++obj) 
-   {
-      objects[obj].setVelocity([0,0,0]);
-   }
-   createConeExplosion(vec3(0, -2, 0.45), explosionDirection, angleSlider.value, 10);
-   console.log(explosionDirection);
-   updateTimeSlider();
+   resetObjects();
+   //console.log(explosionDirection);
 }
 
