@@ -139,7 +139,11 @@ window.onload = function init() {
    createObject(floor, vec4(0, 0, 0));
    
    resetObjects();
+<<<<<<< HEAD
    createConeExplosion(vec3(0, -2, 0.45), vec3(0, 1, 1), angleSlider.value, 15);
+=======
+   createConeExplosion(vec3(0, -2, 0.45), explosionDirection, angleSlider.value, 10);
+>>>>>>> origin/master
    
    render();
 };
