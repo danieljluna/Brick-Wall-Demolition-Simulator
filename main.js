@@ -102,7 +102,7 @@ window.onload = function init() {
    worldViewMatrix = mult(worldViewMatrix, scale(0.075, 0.075, 0.075));
    //Create perspective Matrix
    perspectiveMatrix = mat4(1);
-   perspectiveMatrix[3][2] = 1 / 3;   //account for perspective
+   perspectiveMatrix[3][2] = 1 / 2;   //account for perspective
    
    //Store the index of the shader's vecModelViewMatrix
    vecModelViewLoc = gl.getUniformLocation(program, "vecModelViewMatrix");
@@ -139,7 +139,7 @@ window.onload = function init() {
    createObject(floor, vec4(0, 0, 0));
    
    resetObjects();
-   createConeExplosion(vec3(0, -2, 0.45), vec3(0, 1, 1), angleSlider.value, 10);
+   createConeExplosion(vec3(0, -2, 0.45), vec3(0, 1, 1), angleSlider.value, 15);
    
    render();
 };

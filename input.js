@@ -8,6 +8,8 @@ var angleLabel;
 var playButton;
 var playing = false;
 
+var intervalID = 0;
+
 
 function setUpInput() {
    timeSlider = document.getElementById("timeSlider");
@@ -29,15 +31,22 @@ function updateTimeSlider() {
 
 
 function playPress() {
-   /*
    playing = !(playing);
    if (playing) {
       playButton.innerHTML = "Pause";
-      timeSlider.value += timeSlider.step;
+      intervalID = setInterval(function(){
+         if (parseFloat(timeSlider.value) < 6) {
+            var temp = parseFloat(timeSlider.value) + .04;
+            timeSlider.value = temp.toString();
+            updateTimeSlider();
+         } else {
+            playPress();
+         }
+      }, 40);
    } else {
       playButton.innerHTML = "Play";
+      clearInterval(intervalID);
    }
-   */
 };
 
 
@@ -49,6 +58,6 @@ function updateAngleSlider()
    {
       objects[obj].setVelocity([0,0,0]);
    }
-   createConeExplosion(vec3(0, -2, 0.45), vec3(0, 1, 1), angleSlider.value, 10);
+   createConeExplosion(vec3(0, -2, 0.45), vec3(0, 1, 1), angleSlider.value, 15);
    updateTimeSlider();
 }
