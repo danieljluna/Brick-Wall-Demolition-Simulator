@@ -10,6 +10,7 @@ vertexShaderSource = "\
    varying vec4 fColor;                               \n\
                                                       \n\
    uniform mat4 modelViewMatrix;                      \n\
+   uniform mat4 rotationMatrix;                       \n\
    uniform mat3 vecModelViewMatrix;                   \n\
                                                       \n\
    uniform vec4 eyeVec;                               \n\
@@ -26,7 +27,8 @@ vertexShaderSource = "\
    void main()                                        \n\
    {                                                  \n\
       //Get the current Position                      \n\
-      vec4 pos = vPosition + time * velocity;         \n\
+      vec4 pos = rotationMatrix* vPosition;           \n\
+      pos += time * velocity;                         \n\
       if (dot(velocity, velocity) != 0.0) {           \n\
          vec4 gravity = vec4(0, 0, -9.81, 0);         \n\
          pos += 0.5 * time * time * gravity;          \n\

@@ -10,3 +10,7 @@ var BRICK_POLY = [
 var FLOOR_POLY = [
    ["floor", 1, 2, 3, 4]
 ];
+
+var WATER_POLY = [
+   ["floor", 1, 2, 3, 4]
+];

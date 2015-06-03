@@ -52,6 +52,8 @@ function updateTimeSlider() {
 function playPress() {
    playing = !(playing);
    if (playing) {
+      if (parseFloat(timeSlider.value) == 6)
+         timeSlider.value = "0";
       playButton.innerHTML = "Pause";
       intervalID = setInterval(function(){
          if (parseFloat(timeSlider.value) < 6) {

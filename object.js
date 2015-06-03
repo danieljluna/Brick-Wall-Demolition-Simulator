@@ -13,17 +13,20 @@ var Object = function(model_id, pos, initTime, smooth) {
    if ((model_id < models.length) && (model_id >= 0)) {
       this.model = model_id;
    } else {
-      this.model = 0;
+      this.model = -1;
    }
    
    this.position = vec3(pos[0], pos[1], pos[2]);
    this.velocity = vec3(0, 0, 0);
+   this.angularVelocity = 0;
+   this.axisOfRot = vec3(0, 0, 0);
    this.initTime = Math.max(initTime, 0);
    this.smooth = (!(!(smooth)));
    this.dynamic = false;
    
    //Holds transform from model to world
-   this.modelWorldMatrix = translate(pos[0], pos[1], pos[2]);
+   this.translationMatrix = translate(pos[0], pos[1], pos[2]);
+   this.rotationMatrix = mat4();
    
    //Object index in objects
    this.id = objects.push(this) - 1;
@@ -46,6 +49,19 @@ Object.prototype.setVelocity = function(vx, vy, vz) {
 };
 
 
+Object.prototype.setRotation = function(angVel, axisX, axisY, axisZ) {
+   if ((Array.isArray(axisX)) && (axisX.length == 3)) {
+      axisZ = axisX[2];
+      axisY = axisX[1];
+      axisX = axisX[0];
+   }
+   
+   this.angularVelocity = angVel;
+   this.axisOfRot = vec3(axisX, axisY, axisZ);
+   this.rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), [axisX, axisY, axisZ]);
+};
+
+
 Object.prototype.setModel = function(model_id) {
    // Updates the model id if a valid id is passed
    if ((model_id < models.length) && (model_id >= 0)) {
@@ -58,7 +74,11 @@ Object.prototype.draw = function(vBuffer, nBuffer) {
    // Draws the object using it's current settings
    
    //Send Shader modelViewMatrix and vecModelViewMatrix
-   var modelViewMatrix = mult(worldViewMatrix, this.modelWorldMatrix);
+   if (this.angularVelocity != 0)
+      this.rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
+   gl.uniformMatrix4fv(rotMatLoc, false, flatten(this.rotationMatrix));
+   var modelWorldMatrix = this.translationMatrix;
+   var modelViewMatrix = mult(worldViewMatrix, modelWorldMatrix);
    if (doPerspective)
       modelViewMatrix = mult(perspectiveMatrix, modelViewMatrix);
    gl.uniformMatrix4fv(modelViewLoc, false, flatten(modelViewMatrix));
@@ -83,6 +103,7 @@ function createObject(model_id, transformMatrix, initTime, smooth) {
 function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
    
    var offset = origin;
+   var result = objects.length;
    for (var r = 0; r < rows; ++r) {
       
       for (var obj = 0; obj < perRow; ++obj) {
@@ -105,6 +126,7 @@ function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
       }
    }
    
+   return result;
 }
 
 

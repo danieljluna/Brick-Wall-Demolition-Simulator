@@ -571,7 +571,7 @@ function lookAt( eye, at, up )
         vec4( n, -dot(n, eye) ),
         vec4( u, -dot(u, eye) ),
         vec4( v, -dot(v, eye) ),
-        vec4()
+        vec4(0, 0, 0, 1)
     );
 
     return result;

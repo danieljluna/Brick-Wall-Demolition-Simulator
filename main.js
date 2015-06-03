@@ -33,6 +33,7 @@ var surfAmbientLoc;
 var velocityLoc;
 var timeLoc;
 var dynamicLoc;
+var rotMatLoc;
 
 //Matrices to save transforms
 var worldViewMatrix;
@@ -44,8 +45,10 @@ var offset;
 
 var eyeVec = vec4(20, -100, 50, 0);
 
-//Stores clicking bounding box
-var boundingBox = [-75, 10, -20, 50, -12, 20];
+var WATER_MODEL;
+var FLOOR_MODEL;
+var BRICK_MODEL;
+var BRICK_START;
 
 //Onload init() function:
 window.onload = function init() {
@@ -60,7 +63,7 @@ window.onload = function init() {
    //Inform gl of the portion of the canvas we want to draw on
    gl.viewport( 0, 0, canvas.width, canvas.height );
    //Set the COLOR_BUFFER_BIT to the color defined below in an rgba fashion
-   gl.clearColor( 0.0, 0.1, 0.3, 1.0 );
+   gl.clearColor( 0.2, 0.2, 0.7, 1.0 );
    
    gl.enable(gl.DEPTH_TEST);
    
@@ -128,15 +131,18 @@ window.onload = function init() {
    surfAmbientLoc = gl.getUniformLocation(program, "surfaceAmbient");
    velocityLoc = gl.getUniformLocation(program, "velocity");
    timeLoc = gl.getUniformLocation(program, "time");
+   rotMatLoc = gl.getUniformLocation(program, "rotationMatrix");
    dynamicLoc = gl.getUniformLocation(program, "dynamic");
    gl.uniform1f(timeLoc, 0);
    
-   //Create Bricks
-   createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
-   createRows(0, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
+   WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
+   createObject(WATER_MODEL, vec4(0, 0, -1));
    
-   var floor = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
-   createObject(floor, vec4(0, 0, 0));
+   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
+   BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
+   
+   FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
+   createObject(FLOOR_MODEL, vec4(0, 0, 0));
    
    resetObjects();
 };
@@ -158,26 +164,27 @@ function render() {
 function resetObjects() {
    for (obj = 0; obj < objects.length; ++obj) {
       switch (objects[obj].model) {
-      case 0:  //For bricks
+      case 2:  //For bricks
          objects[obj].setVelocity([0,0,0]);
          break;
-      case 1:  //For the floor
-      case 2:  //For the Splash Particles
+      default:  //For everything else
          break;
       }
    }
-   createConeExplosion(vec3(0, -2, 0.45), explosionDirection, angleSlider.value, 10);
+   
+createConeExplosion(vec3(0, -2, 0.45), explosionDirection, angleSlider.value, 10);
    render();
 }
 
 
 function createConeExplosion(source, direction, angle, magnitude) {
-   for (obj = 0; (objects[obj].model == 0); ++obj) {
+   for (obj = BRICK_START; (objects[obj].model == BRICK_MODEL); ++obj) {
       if(coneCollision(source, direction, angle, objects[obj].position) == false)
       {
         var velocity = normalize(subtract(objects[obj].position, source));
         velocity = scaleVec(magnitude, velocity);
         objects[obj].setVelocity(velocity);
+        objects[obj].setRotation(40, vec3(0, 0, 1));
       }
    }
 };
