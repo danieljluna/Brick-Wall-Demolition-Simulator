@@ -85,7 +85,7 @@ Object.prototype.draw = function(vBuffer, nBuffer) {
       if (doPerspective)
          modelViewMatrix = mult(perspectiveMatrix, modelViewMatrix);
       gl.uniformMatrix4fv(modelViewLoc, false, flatten(modelViewMatrix));
-      gl.uniformMatrix3fv(vecModelViewLoc, false, flatten(inverse(trim(modelViewMatrix, 3, 3), false)));
+      gl.uniformMatrix3fv(vecModelViewLoc, false, flatten(inverse(trim(mult(modelViewMatrix, this.rotationMatrix), 3, 3), false)));
       
       gl.uniform4fv(velocityLoc, flatten(vec4(this.velocity, 0)));
       gl.uniform1f(dynamicLoc, this.dynamic);

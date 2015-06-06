@@ -12,6 +12,8 @@ vertexShaderSource = "\
    uniform mat4 modelViewMatrix;                      \n\
    uniform mat4 rotationMatrix;                       \n\
    uniform mat3 vecModelViewMatrix;                   \n\
+   uniform mat4 worldViewMatrix;                      \n\
+   uniform mat3 vecWorldViewMatrix;                   \n\
                                                       \n\
    uniform vec4 eyeVec;                               \n\
    uniform vec4 lightVec;                             \n\
@@ -35,14 +37,14 @@ vertexShaderSource = "\
       }                                               \n\
                                                       \n\
       //Pass Position to Fragment Shader              \n\
-      pos = modelViewMatrix * pos;                    \n\
-      gl_Position = pos*vec4(1,1,0.1,1);              \n\
+      vec4 temp = modelViewMatrix * pos;              \n\
+      gl_Position = temp*vec4(1,1,0.1,1);             \n\
                                                       \n\
       //Calculate light vector                        \n\
-      vec3 L = normalize((gl_Position - lightVec).xyz);\n\
+      vec3 L = normalize((worldViewMatrix*lightVec - temp).xyz);\n\
                                                       \n\
       //Calculate light vector                        \n\
-      vec3 E = normalize((eyeVec - gl_Position).xyz); \n\
+      vec3 E = normalize((worldViewMatrix*eyeVec - temp).xyz); \n\
                                                       \n\
       //Normalize Normal vector                       \n\
       vec3 N = normalize(vecModelViewMatrix*vNormal.xyz);\n\

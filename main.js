@@ -43,7 +43,7 @@ var vecWorldViewMatrix;
 //Store canvas offset for canvas on page:
 var offset;
 
-var eyeVec = vec4(20, -100, 50, 0);
+var eyeVec = vec4(20, -100, 50, 1);
 
 var WATER_MODEL;
 var FLOOR_MODEL;
@@ -63,7 +63,7 @@ window.onload = function init() {
    //Inform gl of the portion of the canvas we want to draw on
    gl.viewport( 0, 0, canvas.width, canvas.height );
    //Set the COLOR_BUFFER_BIT to the color defined below in an rgba fashion
-   gl.clearColor( 0.2, 0.2, 0.7, 1.0 );
+   gl.clearColor( 0.5, 0.5, 0.7, 1.0 );
    
    gl.enable(gl.DEPTH_TEST);
    
@@ -110,11 +110,22 @@ window.onload = function init() {
    //Store the index of the shader's vecModelViewMatrix
    vecModelViewLoc = gl.getUniformLocation(program, "vecModelViewMatrix");
    //Store the transform into normalWorldViewMatrix
-   var vecWorldViewMatrix = inverse(worldViewMatrix, false);
+   var vecWorldViewMatrix = inverse(trim(worldViewMatrix, 3, 3));
+   
+   gl.uniformMatrix4fv(
+      gl.getUniformLocation(program, "worldViewMatrix"),
+      false, 
+      flatten(worldViewMatrix)
+   );
+   gl.uniformMatrix3fv(
+      gl.getUniformLocation(program, "vecWorldViewMatrix"),
+      false, 
+      flatten(vecWorldViewMatrix)
+   );
    
    //Send lightVec to shader
    var lightVecLoc = gl.getUniformLocation(program, "lightVec");
-   gl.uniform4fv(lightVecLoc, flatten(transformPoint(worldViewMatrix, vec4(0, -160, 80, 0))));
+   gl.uniform4fv(lightVecLoc, flatten(transformPoint(worldViewMatrix, vec4(0, 100, 1000, 0))));
    
    //Send eyeVec to shader
    var eyeVecLoc = gl.getUniformLocation(program, "eyeVec");
@@ -195,7 +206,7 @@ function createConeExplosion(source, direction, angle, magnitude) {
         );
         var mag = Math.sqrt(dot(rotationVector, rotationVector));
         rotationVector = scaleVec(-1.0 / mag, rotationVector);
-        objects[obj].setRotation(magnitude*mag / 2.5, rotationVector);
+        objects[obj].setRotation(magnitude*mag / 3, rotationVector);
       }
    }
 };
