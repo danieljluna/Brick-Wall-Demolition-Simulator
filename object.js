@@ -73,21 +73,25 @@ Object.prototype.setModel = function(model_id) {
 Object.prototype.draw = function(vBuffer, nBuffer) {
    // Draws the object using it's current settings
    
-   //Send Shader modelViewMatrix and vecModelViewMatrix
-   if (this.angularVelocity != 0)
-      this.rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
-   gl.uniformMatrix4fv(rotMatLoc, false, flatten(this.rotationMatrix));
-   var modelWorldMatrix = this.translationMatrix;
-   var modelViewMatrix = mult(worldViewMatrix, modelWorldMatrix);
-   if (doPerspective)
-      modelViewMatrix = mult(perspectiveMatrix, modelViewMatrix);
-   gl.uniformMatrix4fv(modelViewLoc, false, flatten(modelViewMatrix));
-   gl.uniformMatrix3fv(vecModelViewLoc, false, flatten(inverse(trim(modelViewMatrix, 3, 3), false)));
-   
-   gl.uniform4fv(velocityLoc, flatten(vec4(this.velocity, 0)));
-   gl.uniform1f(dynamicLoc, this.dynamic);
-   
-   models[this.model].draw(vBuffer, nBuffer);
+   if (parseFloat(timeSlider.value) >= this.initTime) {
+      //Send Shader modelViewMatrix and vecModelViewMatrix
+      if (this.initTime != 0)
+         gl.uniform1f(timeLoc, parseFloat(timeSlider.value) - initTime);
+      if (this.angularVelocity != 0)
+         this.rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
+      gl.uniformMatrix4fv(rotMatLoc, false, flatten(this.rotationMatrix));
+      var modelWorldMatrix = this.translationMatrix;
+      var modelViewMatrix = mult(worldViewMatrix, modelWorldMatrix);
+      if (doPerspective)
+         modelViewMatrix = mult(perspectiveMatrix, modelViewMatrix);
+      gl.uniformMatrix4fv(modelViewLoc, false, flatten(modelViewMatrix));
+      gl.uniformMatrix3fv(vecModelViewLoc, false, flatten(inverse(trim(modelViewMatrix, 3, 3), false)));
+      
+      gl.uniform4fv(velocityLoc, flatten(vec4(this.velocity, 0)));
+      gl.uniform1f(dynamicLoc, this.dynamic);
+      
+      models[this.model].draw(vBuffer, nBuffer);
+   }
 };
 
 
@@ -114,7 +118,7 @@ function createRows(model, perRow, rows, origin, objOffset, rowOffset) {
             finalOffset = add(scaleVec(Math.floor((obj + 1) / 2), objOffset), offset);
          }
          
-         createObject(model, finalOffset);
+         createObject(model, finalOffset, 0);
       }
       
       if (r == 0) {

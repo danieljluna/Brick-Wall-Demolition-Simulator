@@ -136,13 +136,13 @@ window.onload = function init() {
    gl.uniform1f(timeLoc, 0);
    
    WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
-   createObject(WATER_MODEL, vec4(0, 0, -1));
+   createObject(WATER_MODEL, vec4(0, 0, -1), 0);
    
    BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
    BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
    
    FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
-   createObject(FLOOR_MODEL, vec4(0, 0, 0));
+   createObject(FLOOR_MODEL, vec4(0, 0, 0), 0);
    
    resetObjects();
 };
@@ -153,7 +153,7 @@ function render() {
    //Draws all of the objects in the scene
    
    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-   
+   gl.uniform1f(timeLoc, timeSlider.value);
    for (var obj = 0; obj < objects.length; ++obj) {
       objects[obj].draw(vBuffer, nBuffer);
    }
@@ -164,25 +164,28 @@ function render() {
 function resetObjects() {
    for (obj = 0; obj < objects.length; ++obj) {
       switch (objects[obj].model) {
-      case 2:  //For bricks
+      case BRICK_MODEL:  //For bricks
          objects[obj].setVelocity([0,0,0]);
+         objects[obj].setRotation(0, vec3(0, 0, 1));
          break;
       default:  //For everything else
          break;
       }
    }
    
-createConeExplosion(vec3(0, -2, 0.45), explosionDirection, angleSlider.value, 10);
+   createConeExplosion(vec3(0, -3, 0.6), explosionDirection, angleSlider.value, 300);
    render();
 }
 
 
 function createConeExplosion(source, direction, angle, magnitude) {
+   var dirNorm = scaleVec(1 / Math.sqrt(dot(direction, direction)), direction);
    for (obj = BRICK_START; (objects[obj].model == BRICK_MODEL); ++obj) {
       if(coneCollision(source, direction, angle, objects[obj].position) == false)
       {
-        var velocity = normalize(subtract(objects[obj].position, source));
-        velocity = scaleVec(magnitude, velocity);
+        var distance = subtract(objects[obj].position, source);
+        var distNorm = scaleVec(1 / Math.sqrt(dot(distance, distance)), distance);
+        velocity = scaleVec(magnitude * dot(distNorm, dirNorm) / dot(distance, distance), distNorm);
         objects[obj].setVelocity(velocity);
         objects[obj].setRotation(40, vec3(0, 0, 1));
       }

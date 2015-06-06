@@ -44,7 +44,6 @@ function setUpInput() {
 
 function updateTimeSlider() {
    timeLabel.innerHTML = timeSlider.value;
-   gl.uniform1f(timeLoc, timeSlider.value);
    render();
 };
 
