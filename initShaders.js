@@ -35,8 +35,8 @@ vertexShaderSource = "\
       }                                               \n\
                                                       \n\
       //Pass Position to Fragment Shader              \n\
-      vec4 temp = modelViewMatrix * pos;              \n\
-      gl_Position = temp*vec4(1,1,0.1,1);             \n\
+      pos = modelViewMatrix * pos;                    \n\
+      gl_Position = pos*vec4(1,1,0.1,1);              \n\
                                                       \n\
       //Calculate light vector                        \n\
       vec3 L = normalize((gl_Position - lightVec).xyz);\n\

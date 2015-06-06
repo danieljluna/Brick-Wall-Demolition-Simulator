@@ -173,7 +173,7 @@ function resetObjects() {
       }
    }
    
-   createConeExplosion(vec3(0, -3, 0.6), explosionDirection, angleSlider.value, 300);
+   createConeExplosion(vec3(0, -3, 1), explosionDirection, angleSlider.value, 300);
    render();
 }
 
@@ -187,7 +187,15 @@ function createConeExplosion(source, direction, angle, magnitude) {
         var distNorm = scaleVec(1 / Math.sqrt(dot(distance, distance)), distance);
         velocity = scaleVec(magnitude * dot(distNorm, dirNorm) / dot(distance, distance), distNorm);
         objects[obj].setVelocity(velocity);
-        objects[obj].setRotation(40, vec3(0, 0, 1));
+        var objPos = objects[obj].position;
+        var rotationVector = vec3(
+           direction[1]*(objPos[2] - source[2]) - direction[2]*(source[1] - objPos[1]),
+           direction[0]*(source[2] - objPos[2]) - direction[2]*(objPos[0] - source[0]),
+           direction[0]*(objPos[1] - source[1]) - direction[1]*(source[0] - objPos[0])
+        );
+        var mag = Math.sqrt(dot(rotationVector, rotationVector));
+        rotationVector = scaleVec(-1.0 / mag, rotationVector);
+        objects[obj].setRotation(magnitude*mag / 2.5, rotationVector);
       }
    }
 };
