@@ -4,6 +4,8 @@
 
 var objects = [];
 var objSelected = -1;
+//matrix with time for each splash
+var splashes = [];
 
 // Object Class
 var Object = function(model_id, pos, initTime, smooth) {
@@ -164,4 +166,21 @@ function coneCollision(coneSource, coneDirection, angleOfCone, brickCOM)
         return true;
         
     }
+}
+//Z is up, so you need the zVelocity, and you need where it starts, which is its Z
+function splashTime(zVelocity, brickZ)
+{
+    var gravity = 9.81;
+    
+    
+    //finding the z displacement
+    var zDisplacement = (zVelocity * zVelocity) / (gravity * 2);
+    //the max height
+    var maxHeight = zDisplacement + brickZ;
+    //finding time at the max height using t = (Vf - Vo) / a
+    var tUp = (0 - zVelocity) / (-1 * gravity);
+    //finding the time it takes to go down using d = 1/2at^2
+    var tDown = Math.sqrt((2 * maxHeight) / gravity);
+    var totalTime = tUp + tDown;
+    return totalTime;
 }

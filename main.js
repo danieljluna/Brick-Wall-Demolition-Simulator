@@ -48,6 +48,7 @@ var eyeVec = vec4(20, -100, 50, 1);
 var WATER_MODEL;
 var FLOOR_MODEL;
 var BRICK_MODEL;
+var SPLASH_MODEL;
 var BRICK_START;
 
 //Onload init() function:
@@ -155,10 +156,13 @@ window.onload = function init() {
    FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
    createObject(FLOOR_MODEL, vec4(0, 0, 0), 0);
    
+   SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
+   createObject(SPLASH_MODEL, vec4(0, 1, -1), 0);
+   
    resetObjects();
 };
 
-
+    
 //Draw Functions:
 function render() {
    //Draws all of the objects in the scene
