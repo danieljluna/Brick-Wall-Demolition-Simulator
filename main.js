@@ -176,13 +176,15 @@ function render() {
 
 
 function resetObjects() {
+   var splashObjs = 0;
    for (obj = 0; obj < objects.length; ++obj) {
       switch (objects[obj].model) {
       case BRICK_MODEL:  //For bricks
          objects[obj].setVelocity([0,0,0]);
          objects[obj].setRotation(0, vec3(0, 0, 1));
          break;
-      default:  //For everything else
+      case SPLASH_MODEL:  //For splashes
+         objects.splice(obj, objects.length - obj);
          break;
       }
    }
@@ -213,24 +215,27 @@ function createConeExplosion(source, direction, angle, magnitude) {
         
         var splashCoords = splashTime(objects[obj].velocity[0], objects[obj].velocity[1], objects[obj].velocity[2],
         objects[obj].position[0], objects[obj].position[1], objects[obj].position[2]);
-        console.log("time is " + splashCoords[3]);
-        createSplash(splashCoords[0], splashCoords[1], splashCoords[2], splashCoords[3]);
+        var impactVelocity = [objects[obj].velocity[0], objects[obj].velocity[1], objects[obj].velocity[2]];
+        impactVelocity[2] = impactVelocity[2] - 9.81 * splashCoords[3];
+        createSplash([splashCoords[0], splashCoords[1]], impactVelocity, splashCoords[3]);
       }
    }
 };
 
-function createSplash(x,y,z, time)
+function createSplash(pos, impactVel, time)
 {
-    var random = (Math.floor(Math.random() * 10) + 15)
+    var impactMag = Math.sqrt(impactVel[0]*impactVel[0] + impactVel[1]*impactVel[1] + impactVel[2]*impactVel[2]);
+    impactVel = scaleVec(5 / impactMag, vec3(impactVel));
+    var random = Math.floor(Math.random() * 5 + impactMag - 5);
     for( i = 0; i <random ; i++)
     {
         var randomX = 2 * Math.random() - 1;
         var randomY = 2 * Math.random() - 1;
         
-        var newObject = createObject(SPLASH_MODEL, vec4(x + randomX , y + randomY, 0), time);
-        var rVelX = 5 * randomX;
-        var rVelY = 5 * randomY;
-        var rVelZ = Math.sqrt(50 - rVelX * rVelX - rVelY * rVelY + (50 * Math.random()));
+        var newObject = createObject(SPLASH_MODEL, vec4(pos[0] + randomX , pos[1] + randomY, 0), time);
+        var rVelX = 2 * randomX - impactVel[0];
+        var rVelY = 2 * randomY - impactVel[1];
+        var rVelZ = impactMag/2 - Math.sqrt(rVelX*rVelX + rVelY*rVelY) + 5*Math.random();
         objects[newObject].setVelocity([rVelX, rVelY, rVelZ]);
     }
 }
