@@ -57,7 +57,9 @@ var SPLASH_COORD = [
    [0, 0, -1]
 ];
 
-var splashRadius = .1;
+var splashRadius = 1;
 for (var i = 0; i < SPLASH_COORD.length; ++i) {
-   SPLASH_COORD[i] = splashRadius * SPLASH_COORD[i];
+   SPLASH_COORD[i][0] = splashRadius * SPLASH_COORD[i][0];
+   SPLASH_COORD[i][1] = splashRadius * SPLASH_COORD[i][1];
+   SPLASH_COORD[i][2] = splashRadius * SPLASH_COORD[i][2];
 }

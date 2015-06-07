@@ -157,7 +157,7 @@ window.onload = function init() {
    createObject(FLOOR_MODEL, vec4(0, 0, 0), 0);
    
    SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
-   createObject(SPLASH_MODEL, vec4(0, 1, -1), 0);
+   createObject(SPLASH_MODEL, vec4(0, -5, 10), 0);
    
    resetObjects();
 };
