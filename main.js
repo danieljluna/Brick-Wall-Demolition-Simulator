@@ -190,7 +190,6 @@ function resetObjects() {
 
 
 function createConeExplosion(source, direction, angle, magnitude) {
-   direction = normalize(direction);
    var dirNorm = scaleVec(1 / Math.sqrt(dot(direction, direction)), direction);
    for (obj = BRICK_START; (objects[obj].model == BRICK_MODEL); ++obj) {
       if(coneCollision(source, direction, angle, objects[obj].position) == false)
