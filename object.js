@@ -78,7 +78,7 @@ Object.prototype.draw = function(vBuffer, nBuffer) {
    if (parseFloat(timeSlider.value) >= this.initTime) {
       //Send Shader modelViewMatrix and vecModelViewMatrix
       if (this.initTime != 0)
-         gl.uniform1f(timeLoc, parseFloat(timeSlider.value) - initTime);
+         gl.uniform1f(timeLoc, parseFloat(timeSlider.value) - this.initTime);
       if (this.angularVelocity != 0)
          this.rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
       gl.uniformMatrix4fv(rotMatLoc, false, flatten(this.rotationMatrix));
