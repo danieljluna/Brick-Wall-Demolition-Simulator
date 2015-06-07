@@ -56,3 +56,8 @@ var SPLASH_COORD = [
    //South Pole: 26
    [0, 0, -1]
 ];
+
+var splashRadius = .1;
+for (var i = 0; i < SPLASH_COORD.length; ++i) {
+   SPLASH_COORD[i] = splashRadius * SPLASH_COORD[i];
+}
