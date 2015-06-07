@@ -214,3 +214,8 @@ function createConeExplosion(source, direction, angle, magnitude) {
       }
    }
 };
+
+function createSplash(x,y,z)
+{
+    //console.log
+}

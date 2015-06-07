@@ -168,7 +168,7 @@ function coneCollision(coneSource, coneDirection, angleOfCone, brickCOM)
     }
 }
 //Z is up, so you need the zVelocity, and you need where it starts, which is its Z
-function splashTime(zVelocity, brickZ)
+function splashTime(xVelocity, yVelocity, zVelocity,brickX, brickY, brickZ )
 {
     var gravity = 9.81;
     
@@ -182,5 +182,11 @@ function splashTime(zVelocity, brickZ)
     //finding the time it takes to go down using d = 1/2at^2
     var tDown = Math.sqrt((2 * maxHeight) / gravity);
     var totalTime = tUp + tDown;
-    return totalTime;
+    
+    var xCoord = brickX + (xVelocity * totalTime);
+    var yCoord = brickY = (yVelocity * totalTime);
+    var zCoord = 0;
+    var result = new vec4(xCoord, yCoord, zCoord, totalTime);
+    return result;
+    //return totalTime;
 }
