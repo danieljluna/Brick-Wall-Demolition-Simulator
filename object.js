@@ -75,10 +75,12 @@ Object.prototype.setModel = function(model_id) {
 Object.prototype.draw = function(vBuffer, nBuffer) {
    // Draws the object using it's current settings
    
-   if (parseFloat(timeSlider.value) >= this.initTime) {
+   var thisTime = parseFloat(timeSlider.value) - this.initTime;
+   if ( (thisTime >= 0) && ( (!(this.dynamic)) || 
+         (this.position[2] + this.velocity[2] * thisTime - 4.90 * thisTime * thisTime > -1) ) ) {
       //Send Shader modelViewMatrix and vecModelViewMatrix
       if (this.initTime != 0)
-         gl.uniform1f(timeLoc, parseFloat(timeSlider.value) - this.initTime);
+         gl.uniform1f(timeLoc, thisTime);
       if (this.angularVelocity != 0)
          this.rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
       gl.uniformMatrix4fv(rotMatLoc, false, flatten(this.rotationMatrix));

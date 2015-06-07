@@ -148,7 +148,7 @@ window.onload = function init() {
    gl.uniform1f(timeLoc, 0);
    
    WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
-   createObject(WATER_MODEL, vec4(0, 0, -1), 0);
+   createObject(WATER_MODEL, vec4(0, 0, 0), 0);
    
    BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
    BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
@@ -157,7 +157,6 @@ window.onload = function init() {
    createObject(FLOOR_MODEL, vec4(0, 0, 0), 0);
    
    SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
-   //createObject(SPLASH_MODEL, vec4(0, -5, 10), 0);
    
    resetObjects();
 };
@@ -222,16 +221,16 @@ function createConeExplosion(source, direction, angle, magnitude) {
 
 function createSplash(x,y,z, time)
 {
-    var random = (Math.floor(Math.random() * 10) + 5)
+    var random = (Math.floor(Math.random() * 10) + 15)
     for( i = 0; i <random ; i++)
     {
-        var randomX = (Math.floor(Math.random() * 10) + 1) - 5;
-        var randomY = (Math.floor(Math.random() * 10) + 1) - 5;
+        var randomX = 2 * Math.random() - 1;
+        var randomY = 2 * Math.random() - 1;
         
         var newObject = createObject(SPLASH_MODEL, vec4(x + randomX , y + randomY, 0), time);
-        var rVelX = (Math.floor(Math.random() * 10) - 5 );
-        var rVelY = (Math.floor(Math.random() * 10) - 5);
-        var rVelZ = (Math.floor(Math.random() * 10) + 1);
+        var rVelX = 5 * randomX;
+        var rVelY = 5 * randomY;
+        var rVelZ = Math.sqrt(50 - rVelX * rVelX - rVelY * rVelY + (50 * Math.random()));
         objects[newObject].setVelocity([rVelX, rVelY, rVelZ]);
     }
 }
