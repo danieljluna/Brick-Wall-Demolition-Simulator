@@ -230,6 +230,6 @@ function createSplash(x,y,z, time)
         var rVelY = (Math.floor(Math.random() * 10) + 1);
         var rVelZ = (Math.floor(Math.random() * 10) + 1);
         objects[newObject].setVelocity([rVelX, rVelY, rVelZ]);
-        objects[newObject].initTime = Math.max(time, 1);
+        objects[newObject].initTime = .1;
     }
 }
