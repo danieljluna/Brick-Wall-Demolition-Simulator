@@ -157,7 +157,9 @@ window.onload = function init() {
    createObject(FLOOR_MODEL, vec4(0, 0, 0), 0);
    
    SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
-   createObject(SPLASH_MODEL, vec4(0, -5, 10), 0);
+   //createObject(SPLASH_MODEL, vec4(0, -5, 10), 0);
+   
+   createSplash(0,-5,10, 0);
    
    resetObjects();
 };
@@ -215,7 +217,19 @@ function createConeExplosion(source, direction, angle, magnitude) {
    }
 };
 
-function createSplash(x,y,z)
+function createSplash(x,y,z, time)
 {
-    //console.log
+    var random = (Math.floor(Math.random() * 10) + 5)
+    for( i = 0; i <random ; i++)
+    {
+        var randomX = (Math.floor(Math.random() * 10) + 1) - 5;
+        var randomY = (Math.floor(Math.random() * 10) + 1) - 5;
+        
+        var newObject = createObject(SPLASH_MODEL, vec4(x + randomX , y + randomY, 0), 0);
+        var rVelX = (Math.floor(Math.random() * 10) + 1);
+        var rVelY = (Math.floor(Math.random() * 10) + 1);
+        var rVelZ = (Math.floor(Math.random() * 10) + 1);
+        objects[newObject].setVelocity([rVelX, rVelY, rVelZ]);
+        objects[newObject].initTime = Math.max(time, 1);
+    }
 }
