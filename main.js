@@ -125,7 +125,7 @@ window.onload = function init() {
    
    //Send lightVec to shader
    var lightVecLoc = gl.getUniformLocation(program, "lightVec");
-   gl.uniform4fv(lightVecLoc, flatten(transformPoint(worldViewMatrix, vec4(0, 100, 100, 0))));
+   gl.uniform4fv(lightVecLoc, flatten(transformPoint(worldViewMatrix, vec4(0, 100, 1000, 0))));
    
    //Send eyeVec to shader
    var eyeVecLoc = gl.getUniformLocation(program, "eyeVec");

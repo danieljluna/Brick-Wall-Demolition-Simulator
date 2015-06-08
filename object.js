@@ -43,8 +43,8 @@ Object.prototype.setVelocity = function(vx, vy, vz) {
    if (dot(this.velocity, this.velocity) != 0) {
       this.dynamic = true;
       if (this.model == BRICK_MODEL) {
-         //Set lifetime such that z = -10
-         this.lifetime = (-1 * this.velocity[2] - Math.sqrt(this.velocity[2]*this.velocity[2] + 2*9.81*(this.position[2] + 10))) / -9.81;
+         //Set lifetime such that z = -5
+         this.lifetime = (-1 * this.velocity[2] - Math.sqrt(this.velocity[2]*this.velocity[2] + 2*9.81*(this.position[2] + 5))) / -9.81;
       } else if (this.model == SPLASH_MODEL) {
          //Set lifetime such that z = 0
          this.lifetime = (-1 * this.velocity[2] - Math.sqrt(this.velocity[2]*this.velocity[2] + 2*9.81*(this.position[2] + 0))) / -9.81;

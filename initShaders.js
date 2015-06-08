@@ -32,10 +32,10 @@ vertexShaderSource = "\
       gl_Position = temp*vec4(1,1,0.1,1);             \n\
                                                       \n\
       //Calculate light vector                        \n\
-      vec3 L = normalize((pos - lightVec).xyz);\n\
+      vec3 L = normalize((lightVec - pos).xyz);       \n\
                                                       \n\
       //Calculate light vector                        \n\
-      vec3 E = normalize((pos - eyeVec).xyz); \n\
+      vec3 E = normalize((eyeVec - pos).xyz);         \n\
                                                       \n\
       //Normalize Normal vector                       \n\
       vec3 N = normalize(vecModelWorldMatrix*vNormal.xyz);\n\
@@ -63,7 +63,7 @@ vertexShaderSource = "\
                                                       \n\
       //Handle Water Transparency Effects             \n\
       if (pos.z < 0.0) {                              \n\
-         float waterAlpha = max(1.0, -pos.z*0.1);     \n\
+         float waterAlpha = min(1.0, -pos.z*0.1 + .5);\n\
          fColor = vec4(0, 0.1, 0.2, 1.0)*waterAlpha + fColor*(1.0 - waterAlpha);\n\
       }                                               \n\
    }                                                  \n\
