@@ -3,16 +3,34 @@
 
 var timeSlider;
 var timeLabel;
+
 var angleSlider;
 var angleLabel;
+
 var playButton;
 var playing = false;
+
 var xSlider;
 var xLabel;
+//------------------------------
 var zSlider;
 var zLabel;
+//------------------------------
+var explosionMag = 300;
+var magSlider;
+var magLabel
+
+var sXSlider;
+var sXLabel;
+
+var sZSlider;
+var sZLabel;
+
+var sYSlider;
+var sYLabel;
+
 //default cone globals ---- source, direction, angle, magnitude
-var explosionSource;
+var explosionSource = vec3(0, -3, 1);
 //+right,,+up
 var explosionDirection = vec3(0, 1, 1);
 
@@ -28,6 +46,7 @@ function setUpInput() {
    angleSlider = document.getElementById("angleSlider");
    angleLabel = document.getElementById("angleLabel");
    angleSlider.onchange = updateAngleSlider;
+   //---------------------------------------------------------------------------
    // explosion direction x translation
    xSlider = document.getElementById("xSlider");
    xLabel = document.getElementById("xLabel");
@@ -38,6 +57,25 @@ function setUpInput() {
    zSlider = document.getElementById("zSlider");
    zLabel = document.getElementById("zLabel");
    zSlider.onchange = updateZSlider;
+   
+   //---------------------------------------------------------------------------
+   
+   magSlider = document.getElementById("magSlider");
+   magLabel = document.getElementById("magLabel");
+   magSlider.onchange = updateMagSlider;
+   
+   //---------------------------------------------------------------------------
+   sXSlider = document.getElementById("sXSlider");
+   sXLabel = document.getElementById("sXLabel");
+   sXSlider.onchange = updateSXSlider;
+   
+   sYSlider = document.getElementById("sYSlider");
+   sYLabel = document.getElementById("sYLabel");
+   sYSlider.onchange = updateSYSlider;
+   
+   sZSlider = document.getElementById("sZSlider");
+   sZLabel = document.getElementById("sZLabel");
+   sZSlider.onchange = updateSZSlider;
    
 };
 
@@ -94,3 +132,38 @@ function updateZSlider()
    //console.log(explosionDirection);
 }
 
+function updateMagSlider()
+{
+   explosionMag = magSlider.value;
+   //console.log(explosionDirection);
+   magLabel.innerHTML = magSlider.value;
+   resetObjects();
+   //console.log(explosionDirection);
+}
+
+function updateSXSlider()
+{
+   explosionSource[0] = sXSlider.value;
+   //console.log(explosionDirection);
+   sXLabel.innerHTML = sXSlider.value;
+   resetObjects();
+   //console.log(explosionDirection);
+}
+
+function updateSYSlider()
+{
+   explosionSource[1] = sYSlider.value;
+   //console.log(explosionDirection);
+   sYLabel.innerHTML = sYSlider.value;
+   resetObjects();
+   //console.log(explosionDirection);
+}
+
+function updateSZSlider()
+{
+   explosionSource[2] = sZSlider.value;
+   //console.log(explosionDirection);
+   sZLabel.innerHTML = sZSlider.value;
+   resetObjects();
+   //console.log(explosionDirection);
+}

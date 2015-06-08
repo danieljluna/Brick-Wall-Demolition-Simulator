@@ -189,7 +189,7 @@ function resetObjects() {
       }
    }
    
-   createConeExplosion(vec3(0, -3, 1), explosionDirection, angleSlider.value, 300);
+   createConeExplosion(explosionSource, explosionDirection, angleSlider.value, explosionMag);
    render();
 }
 
