@@ -24,20 +24,17 @@ var pointSize = 16;
 var doPerspective = true;
 
 //Stores the location of the modelViewMatrix in the shader
-var modelViewLoc;
-var vecModelViewLoc;
 var surfDiffuseLoc;
 var surfSpecularLoc;
 var shininessLoc;
 var surfAmbientLoc;
-var velocityLoc;
-var timeLoc;
-var dynamicLoc;
-var rotMatLoc;
+var modelWorldLoc;
+var vecModelWorldLoc;
+var worldViewLoc;
+var vecWorldViewLoc;
 
 //Matrices to save transforms
 var worldViewMatrix;
-var perspectiveMatrix;
 var vecWorldViewMatrix;
 
 //Store canvas offset for canvas on page:
@@ -100,16 +97,18 @@ window.onload = function init() {
    gl.enableVertexAttribArray(vNormal);
    
    //Store the index of the shader's modelViewMatrix
-   modelViewLoc = gl.getUniformLocation(program, "modelViewMatrix");
+   worldViewLoc = gl.getUniformLocation(program, "worldViewMatrix");
    //Create worldView Matrix
    worldViewMatrix = lookAt(vec3(0, 0, 0), scaleVec(.008, vec3(eyeVec)), vec3(0, 0, 1));
    worldViewMatrix = mult(worldViewMatrix, scale(0.075, 0.075, 0.075));
    //Create perspective Matrix
    perspectiveMatrix = mat4(1);
-   perspectiveMatrix[3][2] = 1 / 2;   //account for perspective
+   perspectiveMatrix[3][2] = 1 / 1.5;   //account for perspective
+   if (doPerspective)
+      worldViewMatrix = mult(perspectiveMatrix, worldViewMatrix);
    
    //Store the index of the shader's vecModelViewMatrix
-   vecModelViewLoc = gl.getUniformLocation(program, "vecModelViewMatrix");
+   vecWorldViewLoc = gl.getUniformLocation(program, "vecWorldViewMatrix");
    //Store the transform into normalWorldViewMatrix
    var vecWorldViewMatrix = inverse(trim(worldViewMatrix, 3, 3));
    
@@ -126,7 +125,7 @@ window.onload = function init() {
    
    //Send lightVec to shader
    var lightVecLoc = gl.getUniformLocation(program, "lightVec");
-   gl.uniform4fv(lightVecLoc, flatten(transformPoint(worldViewMatrix, vec4(0, 100, 1000, 0))));
+   gl.uniform4fv(lightVecLoc, flatten(transformPoint(worldViewMatrix, vec4(0, 100, 100, 0))));
    
    //Send eyeVec to shader
    var eyeVecLoc = gl.getUniformLocation(program, "eyeVec");
@@ -141,22 +140,19 @@ window.onload = function init() {
    surfSpecularLoc = gl.getUniformLocation(program, "surfaceSpecular");
    shininessLoc = gl.getUniformLocation(program, "surfaceShininess");
    surfAmbientLoc = gl.getUniformLocation(program, "surfaceAmbient");
-   velocityLoc = gl.getUniformLocation(program, "velocity");
-   timeLoc = gl.getUniformLocation(program, "time");
-   rotMatLoc = gl.getUniformLocation(program, "rotationMatrix");
-   dynamicLoc = gl.getUniformLocation(program, "dynamic");
-   gl.uniform1f(timeLoc, 0);
+   modelWorldLoc = gl.getUniformLocation(program, "modelWorldMatrix");
+   vecModelWorldLoc = gl.getUniformLocation(program, "vecModelWorldMatrix");
    
-   WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
-   createObject(WATER_MODEL, vec4(0, 0, 0), 0);
+   WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, false);
+   createObject(WATER_MODEL, vec4(0, 0, -10), 0);
    
-   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
+   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
    BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
    
-   FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10);
+   FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
    createObject(FLOOR_MODEL, vec4(0, 0, 0), 0);
    
-   SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15);
+   SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, true);
    
    resetObjects();
 };
@@ -167,7 +163,6 @@ function render() {
    //Draws all of the objects in the scene
    
    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-   gl.uniform1f(timeLoc, timeSlider.value);
    for (var obj = 0; obj < objects.length; ++obj) {
       objects[obj].draw(vBuffer, nBuffer);
    }

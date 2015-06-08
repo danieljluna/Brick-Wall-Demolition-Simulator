@@ -9,11 +9,10 @@ vertexShaderSource = "\
                                                       \n\
    varying vec4 fColor;                               \n\
                                                       \n\
-   uniform mat4 modelViewMatrix;                      \n\
-   uniform mat4 rotationMatrix;                       \n\
-   uniform mat3 vecModelViewMatrix;                   \n\
+   uniform mat4 modelWorldMatrix;                     \n\
+   uniform mat3 vecModelWorldMatrix;                  \n\
    uniform mat4 worldViewMatrix;                      \n\
-   uniform mat3 vecWorldViewMatrix;                   \n\
+   uniform mat4 vecWorldViewMatrix;                   \n\
                                                       \n\
    uniform vec4 eyeVec;                               \n\
    uniform vec4 lightVec;                             \n\
@@ -22,32 +21,24 @@ vertexShaderSource = "\
    uniform vec4 surfaceSpecular;                      \n\
    uniform float surfaceShininess;                    \n\
    uniform vec4 surfaceAmbient;                       \n\
-   uniform vec4 velocity;                             \n\
-   uniform float time;                                \n\
-   uniform bool dynamic;                              \n\
                                                       \n\
    void main()                                        \n\
    {                                                  \n\
       //Get the current Position                      \n\
-      vec4 pos = rotationMatrix* vPosition;           \n\
-      pos += time * velocity;                         \n\
-      if (dot(velocity, velocity) != 0.0) {           \n\
-         vec4 gravity = vec4(0, 0, -9.81, 0);         \n\
-         pos += 0.5 * time * time * gravity;          \n\
-      }                                               \n\
+      vec4 pos = modelWorldMatrix * vPosition;        \n\
                                                       \n\
       //Pass Position to Fragment Shader              \n\
-      vec4 temp = modelViewMatrix * pos;              \n\
+      vec4 temp = worldViewMatrix * pos;              \n\
       gl_Position = temp*vec4(1,1,0.1,1);             \n\
                                                       \n\
       //Calculate light vector                        \n\
-      vec3 L = normalize((worldViewMatrix*lightVec - temp).xyz);\n\
+      vec3 L = normalize((pos - lightVec).xyz);\n\
                                                       \n\
       //Calculate light vector                        \n\
-      vec3 E = normalize((worldViewMatrix*eyeVec - temp).xyz); \n\
+      vec3 E = normalize((pos - eyeVec).xyz); \n\
                                                       \n\
       //Normalize Normal vector                       \n\
-      vec3 N = normalize(vecModelViewMatrix*vNormal.xyz);\n\
+      vec3 N = normalize(vecModelWorldMatrix*vNormal.xyz);\n\
                                                       \n\
       //Initialize fColor                             \n\
       fColor = vec4(0.0, 0.0, 0.0, 1.0);              \n\
@@ -69,6 +60,12 @@ vertexShaderSource = "\
       fColor.g = min(1.0, fColor.g);                  \n\
       fColor.b = min(1.0, fColor.b);                  \n\
       fColor.a = min(1.0, fColor.a);                  \n\
+                                                      \n\
+      //Handle Water Transparency Effects             \n\
+      if (pos.z < 0.0) {                              \n\
+         float waterAlpha = max(1.0, -pos.z*0.1);     \n\
+         fColor = vec4(0, 0.1, 0.2, 1.0)*waterAlpha + fColor*(1.0 - waterAlpha);\n\
+      }                                               \n\
    }                                                  \n\
 ";
 

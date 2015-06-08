@@ -23,12 +23,9 @@ var Object = function(model_id, pos, initTime, smooth) {
    this.angularVelocity = 0;
    this.axisOfRot = vec3(0, 0, 0);
    this.initTime = Math.max(initTime, 0);
+   this.lifetime = 6;
    this.smooth = (!(!(smooth)));
    this.dynamic = false;
-   
-   //Holds transform from model to world
-   this.translationMatrix = translate(pos[0], pos[1], pos[2]);
-   this.rotationMatrix = mat4();
    
    //Object index in objects
    this.id = objects.push(this) - 1;
@@ -45,8 +42,16 @@ Object.prototype.setVelocity = function(vx, vy, vz) {
    this.velocity = vec3(vx, vy, vz);
    if (dot(this.velocity, this.velocity) != 0) {
       this.dynamic = true;
+      if (this.model == BRICK_MODEL) {
+         //Set lifetime such that z = -10
+         this.lifetime = (-1 * this.velocity[2] - Math.sqrt(this.velocity[2]*this.velocity[2] + 2*9.81*(this.position[2] + 10))) / -9.81;
+      } else if (this.model == SPLASH_MODEL) {
+         //Set lifetime such that z = 0
+         this.lifetime = (-1 * this.velocity[2] - Math.sqrt(this.velocity[2]*this.velocity[2] + 2*9.81*(this.position[2] + 0))) / -9.81;
+      }
    } else {
       this.dynamic = false;
+      this.lifetime = 6;
    }
 };
 
@@ -60,7 +65,6 @@ Object.prototype.setRotation = function(angVel, axisX, axisY, axisZ) {
    
    this.angularVelocity = angVel;
    this.axisOfRot = vec3(axisX, axisY, axisZ);
-   this.rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), [axisX, axisY, axisZ]);
 };
 
 
@@ -76,23 +80,28 @@ Object.prototype.draw = function(vBuffer, nBuffer) {
    // Draws the object using it's current settings
    
    var thisTime = parseFloat(timeSlider.value) - this.initTime;
-   if ( (thisTime >= 0) && ( (!(this.dynamic)) || 
-         (this.position[2] + this.velocity[2] * thisTime - 4.90 * thisTime * thisTime > -1) ) ) {
-      //Send Shader modelViewMatrix and vecModelViewMatrix
-      if (this.initTime != 0)
-         gl.uniform1f(timeLoc, thisTime);
-      if (this.angularVelocity != 0)
-         this.rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
-      gl.uniformMatrix4fv(rotMatLoc, false, flatten(this.rotationMatrix));
-      var modelWorldMatrix = this.translationMatrix;
-      var modelViewMatrix = mult(worldViewMatrix, modelWorldMatrix);
-      if (doPerspective)
-         modelViewMatrix = mult(perspectiveMatrix, modelViewMatrix);
-      gl.uniformMatrix4fv(modelViewLoc, false, flatten(modelViewMatrix));
-      gl.uniformMatrix3fv(vecModelViewLoc, false, flatten(inverse(trim(mult(modelViewMatrix, this.rotationMatrix), 3, 3), false)));
+   if ( (thisTime >= 0) && (thisTime <= this.lifetime) ) {
+      var translationMatrix;
+      var rotationMatrix;
+      var modelWorldMatrix;
       
-      gl.uniform4fv(velocityLoc, flatten(vec4(this.velocity, 0)));
-      gl.uniform1f(dynamicLoc, this.dynamic);
+      //Send Shader modelViewMatrix and vecModelViewMatrix
+      if (this.dynamic) {
+         var currentPos = add(this.position, scaleVec(thisTime, this.velocity));
+         currentPos = add(currentPos, scaleVec(.5*thisTime*thisTime, vec3(0, 0, -9.81)));
+         translationMatrix = translate(currentPos);
+      } else {
+         translationMatrix = translate(this.position);
+      }
+      
+      if (this.angularVelocity != 0) {
+         rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
+         modelWorldMatrix = mult(translationMatrix, rotationMatrix);
+      } else {
+         modelWorldMatrix = translationMatrix;
+      }
+      gl.uniformMatrix4fv(modelWorldLoc, false, flatten(modelWorldMatrix));
+      gl.uniformMatrix3fv(vecModelWorldLoc, false, flatten(inverse(trim(modelWorldMatrix, 3, 3), false)));
       
       models[this.model].draw(vBuffer, nBuffer);
    }

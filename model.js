@@ -6,13 +6,13 @@ var models = [];
 var modelLoaded = -1;
 
 // Model object
-var Model = function(coords, polys, diffuse, specular, shininess) {
+var Model = function(coords, polys, diffuse, specular, shininess, smoothShaded) {
    this.vertices = [];
    this.indices = [];
    this.vertNormals = [];
    this.surfNormals = [];
    
-   this.smoothShaded = false;
+   this.smoothShaded = (!(!(smoothShaded)));
    this.surfaceDiffuse = vec4(diffuse);
    this.surfaceSpecular = vec4(specular);
    this.surfaceShininess = shininess;
@@ -127,8 +127,8 @@ Model.prototype.draw = function(vBuffer, nBuffer) {
 
 
 //Create model and return only its id.
-function createModel(coords, polys, diffuse, specular, shininess) {
-   model = new Model(coords, polys, diffuse, specular, shininess);
+function createModel(coords, polys, diffuse, specular, shininess, smooth) {
+   model = new Model(coords, polys, diffuse, specular, shininess, smooth);
    return model.id;
 };
 
