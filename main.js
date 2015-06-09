@@ -231,7 +231,7 @@ function createConeExplosion(source, direction, angle, magnitude) {
       {
         var distance = subtract(objects[obj].position, source);
         var distNorm = scaleVec(1 / Math.sqrt(dot(distance, distance)), distance);
-        velocity = scaleVec(magnitude * dot(distNorm, dirNorm) / dot(distance, distance), distNorm);
+        velocity = scaleVec(magnitude * Math.cos(Math.acos(dot(distNorm, dirNorm))* 180 / Math.PI / angle) / dot(distance, distance), distNorm);
         objects[obj].setVelocity(velocity);
         var objPos = objects[obj].position;
         var rotationVector = vec3(
@@ -241,7 +241,12 @@ function createConeExplosion(source, direction, angle, magnitude) {
         );
         var mag = Math.sqrt(dot(rotationVector, rotationVector));
         rotationVector = scaleVec(-1.0 / mag, rotationVector);
-        objects[obj].setRotation(magnitude*mag / 3, rotationVector);
+        var distanceLen = Math.sqrt(
+            distance[0]*distance[0] +
+            distance[1]*distance[1] +
+            distance[2]*distance[2]
+        );
+        objects[obj].setRotation(magnitude*mag / (distanceLen), rotationVector);
         
         var splashCoords = splashTime(objects[obj].velocity[0], objects[obj].velocity[1], objects[obj].velocity[2],
         objects[obj].position[0], objects[obj].position[1], objects[obj].position[2]);
