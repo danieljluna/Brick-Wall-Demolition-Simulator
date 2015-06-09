@@ -149,7 +149,7 @@ window.onload = function init() {
    vecModelWorldLoc = gl.getUniformLocation(program, "vecModelWorldMatrix");
    
    WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0, 0, 0, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, false);
-   models[WATER_MODEL].surfaceAmbient = vec4(0.05, 0.3, 0.6, 1.0);
+   models[WATER_MODEL].surfaceAmbient = vec4(0, 0.1, 0.2, 1.0);
    createObject(WATER_MODEL, vec4(0, 0, -10), 0);
    
    FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0, 0, 0, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
