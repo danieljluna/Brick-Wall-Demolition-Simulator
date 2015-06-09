@@ -47,6 +47,7 @@ var WATER_MODEL;
 var FLOOR_MODEL;
 var BRICK_MODEL;
 var SPLASH_MODEL;
+var BAZOOKA_MODEL;
 var BRICK_START;
 
 //Onload init() function:
@@ -156,6 +157,8 @@ window.onload = function init() {
    
    SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, true);
    
+   BAZOOKA_MODEL = createModel(BAZOOKA_COORD, BAZOOKA_POLY, vec4(.8, .8, 0.8, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
+   createObject(BAZOOKA_MODEL, vec4(0,-5, 2), 0);
    resetObjects();
 };
 

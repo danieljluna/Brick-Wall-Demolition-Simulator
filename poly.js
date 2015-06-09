@@ -53,3 +53,32 @@ var SPLASH_POLY = [
    ["Row4Chunk1", 24, 26, 25],
    ["Row4Chunk1", 25, 26, 18],
 ];
+
+var BAZOOKA_POLY = [
+    //"caps"
+    ["BackFace", 1, 3, 4, 2],
+    ["FrontFace", 5, 7, 8, 6],
+    //looking from bottom
+    ["bottom", 3, 7, 8, 4],
+    //looking from top
+    ["top", 1, 2, 6, 5],
+    //looking from .5 side
+    ["side", 2, 4, 8, 6],
+    //looking from -.5 side
+    ["side", 1, 3, 7, 5],
+    //grips .5 side
+    ["shoulder", 17, 10, 12, 18],
+    ["hand", 21, 14, 16, 22],
+    //grips -.5 side
+    ["shoulder", 19, 9, 11, 20],
+    ["hand", 23, 13, 15, 24],
+    //grips from back
+    ["shoulder", 19, 9, 10, 17],
+    ["hand", 23, 13, 14, 21],
+    //grips from front
+    ["shoulder", 18, 12, 11, 20],
+    ["hand", 22, 16, 15, 24],
+    //grips looking from bottom
+    ["shoulder", 10, 9, 11, 12],
+    ["hand", 14, 13, 15, 16]
+];

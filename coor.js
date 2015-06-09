@@ -57,6 +57,39 @@ var SPLASH_COORD = [
    [0, 0, -1]
 ];
 
+var BAZOOKA_COORD = [
+    //barrel farthest from wall 1-4
+    [-.5, -9, 3 ],
+    [.5, -9 , 3],
+    [-.5, -9, 2],
+    [.5, -9, 2],
+    //barrel closest to wall 5-8
+    [-.5, -3, 3],
+    [.5, -3, 3],
+    [-.5, -3, 2],
+    [.5, -3, 2],
+    //bottom of shoulder stock closest to back 9-12
+    [-.5, -6, 0],
+    [.5, -6, 0],
+    [-.5, -5.5, 0],
+    [.5, -5.5, 0],
+    //bottom of hand grip closest to wall 13-16
+    [-.5, -4, 0],
+    [.5, -4, 0],
+    [-.5, -3.5, 0],
+    [.5, -3.5, 0],
+    //where shoulder stock meets barrel 17-20
+    [.5, -6, 2],
+    [.5, -5.5, 2],
+    [-.5, -6, 2],
+    [-.5, -5.5, 2],
+    //where hand grip meets barrel 21-24
+    [.5, -4, 2],
+    [.5, -3.5, 2],
+    [-.5, -4, 2],
+    [-.5, -3.5, 2]
+];
+
 var splashRadius = .2;
 for (var i = 0; i < SPLASH_COORD.length; ++i) {
    SPLASH_COORD[i][0] = splashRadius * SPLASH_COORD[i][0];
