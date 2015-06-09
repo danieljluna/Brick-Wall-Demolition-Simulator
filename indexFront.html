@@ -2,40 +2,42 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h1>John Baden / Daniel Luna CMPS160 Final Project Demolition Particle Effects  </h1>
+<center><h1>John Baden / Daniel Luna CMPS160 Final Project <br> Demolition Particle Effects  </h1>
 
-<p><b> Description:</b></p>
-<p>This program is a simulation where a wall is blown up by a bazooka on one side. 
-    The blocks in the wall that are hit by the explosion are rotated, 
-    and translated with realistic physics.The explosion is treated as user 
-    manipulated cone with variable strength, angle, falloff, etc. Simulation 
-    contains a pool of water on the side of the wall opposite the explosion, 
-    allowing particle splashes and reflection/ refraction .</p>
-
-<p><b>User Guide</b></p>
-
-<p> Using our program is easy! Use the sliders on the bottom of the viewspace
-    to manipulate the angle (the size of the explosion cone), magnitude, source (sX, sY, sZ) and direction (dX, 1, dZ)
-    of the explosion. Once you manipulate the sliders to your hearts content, press play to start 
-    the simulation. You can pause the simulation at any time by pressing
-    the play button again. Alternatively, you can drag the slider under the
-    play button to view the simulation frame by frame. You can manipulate the
-    slider values while viewing it either automatically or frame by frame and it will
-    update in real time.</p>
-    
-<p><b>Tech Details</b></p>
-<p>
-</p>
-
-
- 
 <img src="Screenshot1.png" title="In action!" />
- 
-<p></p>
+
+<h2> Description</h2> </center>
+<p>Our project focuses on generating efficient particle dynamics with a flat reflective and volumetrically
+   transparent body of water. Namely, we use a conical explosion to give a series of bricks appropriate
+   velocity and rotation, then generate appropriate splashes and reflections as time progresses. The conical 
+   explosion is user manipulated with variable strength, angle, falloff, etc. The body of water in question
+   is flat so as to create simpler mathematics, and the splashes are created by generating small spherical
+   droplets with random upward velocity.</p>
+   
+<center>
 <video width="320" height="240" controls>
   <source src="test.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
+
+<h2>User Guide</h2> </center>
+
+<p> Using our program is easy! Use the sliders at the bottom of the window
+    to manipulate the angle, magnitude, source (sX, sY, sZ) and direction (dX, 1, dZ)
+    of the conical explosion. Once you manipulate the sliders to as desired, press play to start 
+    the simulation. You can pause the simulation at any time by pressing
+    the play button again. Alternatively, you can drag the slider under the
+    play button to view the simulation frame by frame. The simulation will automatically update
+    as the settings are changed without the need to restart or pause the simulation.</p>
+
+<center>
+<img src="Screenshot2.png" title="Screenshot2" />
+<h2>Technical Details</h2> </center>
+<p>
+   
+</p>
+
+
 <p></p>
 Here is a link to the project itself!
 
