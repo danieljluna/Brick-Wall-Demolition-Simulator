@@ -50,6 +50,7 @@ var BRICK_MODEL;
 var SPLASH_MODEL;
 var BAZOOKA_MODEL;
 var BRICK_START;
+var bazooka;
 
 //Onload init() function:
 window.onload = function init() {
@@ -128,7 +129,7 @@ window.onload = function init() {
    
    //Send lightVec to shader
    var lightVecLoc = gl.getUniformLocation(program, "lightVec");
-   gl.uniform4fv(lightVecLoc, flatten(transformPoint(worldViewMatrix, vec4(0, 100, 1000, 0))));
+   gl.uniform4fv(lightVecLoc, flatten(transformPoint(worldViewMatrix, vec4(-80, 100, 1000, 0))));
    
    //Send eyeVec to shader
    var eyeVecLoc = gl.getUniformLocation(program, "eyeVec");
@@ -156,14 +157,14 @@ window.onload = function init() {
    models[FLOOR_MODEL].surfaceAmbient = vec4(0.1, 0.25, 0.1, 1.0);
    createObject(FLOOR_MODEL, vec4(0, 0, .1), 0);
    
-   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.7, 0.35, 0.35, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
+   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.6, 0.2, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 5, false);
    models[BRICK_MODEL].surfaceAmbient = vec4(.1, .05, .05, 1.0);
    BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .35, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
    
    SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, true);
    
-   BAZOOKA_MODEL = createModel(BAZOOKA_COORD, BAZOOKA_POLY, vec4(.8, .8, 0.8, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
-   createObject(BAZOOKA_MODEL, vec4(0,-5, 2), 0);
+   BAZOOKA_MODEL = createModel(BAZOOKA_COORD, BAZOOKA_POLY, vec4(.6, .6, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
+   bazooka = createObject(BAZOOKA_MODEL, vec4(0,-5, 2), 0);
    resetObjects();
 };
 
@@ -181,7 +182,7 @@ function render() {
    
    if ((doReflections) && (timeSlider.value != "0")) {
       gl.uniform1f(reflectionRenderLoc, true);
-      for (var obj = BRICK_START; (obj < objects.length) && (objects[obj].model != SPLASH_MODEL); ++obj) {
+      for (var obj = BRICK_START; (obj < objects.length); ++obj) {
          if ((objects[obj].dynamic) && (objects[obj].getPosition()[2] > 0)) {
             gl.uniform4fv(objPosLoc, flatten(vec4(objects[obj].getPosition(), 0)));
             objects[obj].draw(vBuffer, nBuffer);
@@ -201,6 +202,19 @@ function resetObjects() {
          break;
       case SPLASH_MODEL:  //For splashes
          objects.splice(obj, objects.length - obj);
+         break;
+      case BAZOOKA_MODEL: //For Bazooka
+         objects[obj].position = vec3(explosionSource);
+         objects[obj].setScale(explosionMag*.001 + .5, explosionMag*.001 + .5, explosionMag*.001 + .5);
+         var expDirLen = Math.sqrt(
+            explosionDirection[0]*explosionDirection[0] + 
+            explosionDirection[1]*explosionDirection[1] + 
+            explosionDirection[2]*explosionDirection[2]
+         );
+         var axis = cross(scaleVec(1 / expDirLen, explosionDirection), vec3(0, -1, 0));
+         var angleOfRotLen = Math.sqrt(axis[0]*axis[0] + axis[1]*axis[1] + axis[2]*axis[2]);
+         objects[obj].axisOfRot = normalize(axis);
+         objects[obj].angleInit = 180 * Math.asin(angleOfRotLen) / Math.PI;
          break;
       }
    }

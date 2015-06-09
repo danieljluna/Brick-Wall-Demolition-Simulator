@@ -99,7 +99,7 @@ var BAZOOKA_COORD = [
 
 var bazookaScale = .8;
 for (var i = 0; i < BAZOOKA_COORD.length; ++i) {
-   BAZOOKA_COORD[i][0] = bazookaScale * BAZOOKA_COORD[i][0];
-   BAZOOKA_COORD[i][1] = bazookaScale * BAZOOKA_COORD[i][1];
-   BAZOOKA_COORD[i][2] = bazookaScale * BAZOOKA_COORD[i][2];
+   BAZOOKA_COORD[i][0] = bazookaScale * (BAZOOKA_COORD[i][0] - 0);
+   BAZOOKA_COORD[i][1] = bazookaScale * (BAZOOKA_COORD[i][1] + 3);
+   BAZOOKA_COORD[i][2] = bazookaScale * (BAZOOKA_COORD[i][2] - 2.5);
 }

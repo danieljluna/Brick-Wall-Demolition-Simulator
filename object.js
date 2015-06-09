@@ -18,10 +18,13 @@ var Object = function(model_id, pos, initTime, smooth) {
       this.model = -1;
    }
    
+   this.scale = vec3(1, 1, 1);
+   this.isScaled = false;
    this.position = vec3(pos[0], pos[1], pos[2]);
    this.velocity = vec3(0, 0, 0);
    this.angularVelocity = 0;
-   this.axisOfRot = vec3(0, 0, 0);
+   this.angleInit = 0;
+   this.axisOfRot = vec3(0, 0, 1);
    this.initTime = Math.max(initTime, 0);
    this.lifetime = 6;
    this.smooth = (!(!(smooth)));
@@ -68,6 +71,18 @@ Object.prototype.setRotation = function(angVel, axisX, axisY, axisZ) {
 };
 
 
+Object.prototype.setScale = function(scaleX, scaleY, scaleZ) {
+   if ((Array.isArray(scaleX)) && (scaleX.length == 3)) {
+      scaleZ = scaleX[2];
+      scaleY = scaleX[1];
+      scaleX = scaleX[0];
+   }
+   
+   this.scale = vec3(scaleX, scaleY, scaleZ);
+   this.isScaled = (scaleX == 1) && (scaleY == 1) && (scaleZ == 1);
+};
+
+
 Object.prototype.setModel = function(model_id) {
    // Updates the model id if a valid id is passed
    if ((model_id < models.length) && (model_id >= 0)) {
@@ -81,24 +96,24 @@ Object.prototype.draw = function(vBuffer, nBuffer) {
    
    var thisTime = parseFloat(timeSlider.value) - this.initTime;
    if ( (thisTime >= 0) && (thisTime <= this.lifetime) ) {
-      var translationMatrix;
       var rotationMatrix;
       var modelWorldMatrix;
       
       //Send Shader modelViewMatrix and vecModelViewMatrix
+      var modelWorldMatrix = scale(this.scale);
+      
       if (this.dynamic) {
          var currentPos = this.getPosition();
-         translationMatrix = translate(currentPos);
+         modelWorldMatrix = mult(translate(currentPos), modelWorldMatrix);
       } else {
-         translationMatrix = translate(this.position);
+         modelWorldMatrix = mult(translate(this.position), modelWorldMatrix);
       }
       
-      if (this.angularVelocity != 0) {
-         rotationMatrix = rotate(this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
-         modelWorldMatrix = mult(translationMatrix, rotationMatrix);
-      } else {
-         modelWorldMatrix = translationMatrix;
+      if ((this.angularVelocity != 0) || (this.angleInit != 0)) {
+         rotationMatrix = rotate(this.angleInit + this.angularVelocity * parseFloat(timeSlider.value), this.axisOfRot);
+         modelWorldMatrix = mult(modelWorldMatrix, rotationMatrix);
       }
+      
       gl.uniformMatrix4fv(modelWorldLoc, false, flatten(modelWorldMatrix));
       gl.uniformMatrix3fv(vecModelWorldLoc, false, flatten(inverse(trim(modelWorldMatrix, 3, 3), false)));
       

@@ -119,7 +119,7 @@ function updateAngleSlider()
 
 function updateXSlider()
 {
-   explosionDirection[0] = xSlider.value;
+   explosionDirection[0] = parseFloat(xSlider.value);
    //console.log(explosionDirection);
    xLabel.innerHTML = xSlider.value;
    resetObjects();
@@ -128,7 +128,7 @@ function updateXSlider()
 
 function updateZSlider()
 {
-   explosionDirection[2] = zSlider.value;
+   explosionDirection[2] = parseFloat(zSlider.value);
    //console.log(explosionDirection);
    zLabel.innerHTML = zSlider.value.toString();
    resetObjects();
@@ -137,7 +137,7 @@ function updateZSlider()
 
 function updateMagSlider()
 {
-   explosionMag = magSlider.value;
+   explosionMag = parseFloat(magSlider.value);
    //console.log(explosionDirection);
    magLabel.innerHTML = magSlider.value;
    resetObjects();
@@ -146,7 +146,7 @@ function updateMagSlider()
 
 function updateSXSlider()
 {
-   explosionSource[0] = sXSlider.value;
+   explosionSource[0] = parseFloat(sXSlider.value);
    //console.log(explosionDirection);
    sXLabel.innerHTML = sXSlider.value;
    resetObjects();
@@ -155,7 +155,7 @@ function updateSXSlider()
 
 function updateSYSlider()
 {
-   explosionSource[1] = sYSlider.value;
+   explosionSource[1] = parseFloat(sYSlider.value);
    //console.log(explosionDirection);
    sYLabel.innerHTML = sYSlider.value;
    resetObjects();
@@ -164,7 +164,7 @@ function updateSYSlider()
 
 function updateSZSlider()
 {
-   explosionSource[2] = sZSlider.value;
+   explosionSource[2] = parseFloat(sZSlider.value);
    //console.log(explosionDirection);
    sZLabel.innerHTML = sZSlider.value;
    resetObjects();
