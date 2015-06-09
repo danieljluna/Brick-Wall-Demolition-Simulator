@@ -57,6 +57,13 @@ var SPLASH_COORD = [
    [0, 0, -1]
 ];
 
+var splashRadius = .2;
+for (var i = 0; i < SPLASH_COORD.length; ++i) {
+   SPLASH_COORD[i][0] = splashRadius * SPLASH_COORD[i][0];
+   SPLASH_COORD[i][1] = splashRadius * SPLASH_COORD[i][1];
+   SPLASH_COORD[i][2] = splashRadius * SPLASH_COORD[i][2];
+}
+
 var BAZOOKA_COORD = [
     //barrel farthest from wall 1-4
     [-.5, -9, 3 ],
@@ -90,9 +97,9 @@ var BAZOOKA_COORD = [
     [-.5, -3.5, 2]
 ];
 
-var splashRadius = .2;
-for (var i = 0; i < SPLASH_COORD.length; ++i) {
-   SPLASH_COORD[i][0] = splashRadius * SPLASH_COORD[i][0];
-   SPLASH_COORD[i][1] = splashRadius * SPLASH_COORD[i][1];
-   SPLASH_COORD[i][2] = splashRadius * SPLASH_COORD[i][2];
+var bazookaScale = .8;
+for (var i = 0; i < BAZOOKA_COORD.length; ++i) {
+   BAZOOKA_COORD[i][0] = bazookaScale * BAZOOKA_COORD[i][0];
+   BAZOOKA_COORD[i][1] = bazookaScale * BAZOOKA_COORD[i][1];
+   BAZOOKA_COORD[i][2] = bazookaScale * BAZOOKA_COORD[i][2];
 }
