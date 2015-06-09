@@ -70,6 +70,7 @@ vertexShaderSource = "\
          //Handle Reflections                         \n\
          float relativeZ = pos[2] - objPos[2];        \n\
          pos[2] = -1.0 * pos[2];                      \n\
+         E[2] = -1.0 * E[2];                          \n\
          float t = -1.0 * pos[2] / E[2];              \n\
          pos = (pos + t * vec4(E, 0));                \n\
          pos[2] -= 0.01 * relativeZ;                  \n\
