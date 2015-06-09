@@ -39,7 +39,25 @@ Your browser does not support the video tag.
    movement was generated with simple kinematic equations. The bricks were considered to have
    1 kg of mass to keep the equations simple. The rotation of any brick was determined using
    only one axis of rotation, along with a given angular velocity to determine how far to rotate
-   about that axis at any given point in time.
+   about that axis at any given point in time. The origins of the bricks were hard-coded, and the
+   origins of the splashes were found by intersecting movement path of a brick with the surface of 
+   the water. Thus, the hardest part about the motion of the particles was generating the initial
+   velocity of the bricks.
+</p>
+<p>
+   First we checked which bricks lay inside the cone defined by the user. Using the inverse cosine of
+   the dot product between the vector from the source of the explosion extending outward in the diretion
+   given, with the vector from the explosion's source to the center of mass of the brick in question. Our
+   force field decreased with the distance squared to the explosion, and also decreased in force as one moved away from the cone's major axis (another
+   effect achieved with dot products). In order to calculate the rotation of the bricks, we simplified our
+   explosion to a simple spherical explosion which simply worried about the decrease due to the distance from the major axis, 
+   and found the curl of that field at the point in question.
+</p>
+<p>
+   Finally, we could not get transparency to work properly, so we faked our own. As bricks fall below the water
+   level, they are blended with the color of the water directly in the shader. For reflections, we first reflected 
+   the object about the surface of the water. Then we projected it along the vector to the camera until it hit the surface of the water.
+   These reflections were also partially transparent.
 </p>
 
 </body>
