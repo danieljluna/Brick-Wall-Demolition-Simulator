@@ -24,6 +24,7 @@ var pointSize = 16;
 var doPerspective = true;
 
 //Stores the location of the modelViewMatrix in the shader
+var reflectionRenderLoc;
 var surfDiffuseLoc;
 var surfSpecularLoc;
 var shininessLoc;
@@ -136,6 +137,7 @@ window.onload = function init() {
    gl.uniform4fv(lightPropLoc, flatten(vec4(0.9, 0.9, 0.9, 1.0)));
    
    //Store Shading Variables
+   reflectionRenderLoc = gl.getUniformLocation(program, "reflectionRender");
    surfDiffuseLoc = gl.getUniformLocation(program, "surfaceDiffuse");
    surfSpecularLoc = gl.getUniformLocation(program, "surfaceSpecular");
    shininessLoc = gl.getUniformLocation(program, "surfaceShininess");
@@ -146,11 +148,11 @@ window.onload = function init() {
    WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, false);
    createObject(WATER_MODEL, vec4(0, 0, -10), 0);
    
-   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
-   BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
-   
    FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
    createObject(FLOOR_MODEL, vec4(0, 0, 0), 0);
+   
+   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
+   BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
    
    SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, true);
    
@@ -163,10 +165,18 @@ function render() {
    //Draws all of the objects in the scene
    
    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+   
+   gl.uniform1f(reflectionRenderLoc, false);
    for (var obj = 0; obj < objects.length; ++obj) {
       objects[obj].draw(vBuffer, nBuffer);
    }
    
+   if (doReflections) {
+      gl.uniform1f(reflectionRenderLoc, true);
+      for (var obj = BRICK_START; (obj < objects.length) && (objects[obj].model != SPLASH_MODEL); ++obj) {
+         objects[obj].draw(vBuffer, nBuffer);
+      }
+   }
 };
 
 

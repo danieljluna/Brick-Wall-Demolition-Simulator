@@ -21,6 +21,7 @@ vertexShaderSource = "\
    uniform vec4 surfaceSpecular;                      \n\
    uniform float surfaceShininess;                    \n\
    uniform vec4 surfaceAmbient;                       \n\
+   uniform bool reflectionRender;                     \n\
                                                       \n\
    void main()                                        \n\
    {                                                  \n\
@@ -63,7 +64,7 @@ vertexShaderSource = "\
                                                       \n\
       //Handle Water Transparency Effects             \n\
       if (pos.z < 0.0) {                              \n\
-         float waterAlpha = min(1.0, -pos.z*0.1 + .5);\n\
+         float waterAlpha = min(1.0, -pos.z*0.025 + .8);\n\
          fColor = vec4(0, 0.1, 0.2, 1.0)*waterAlpha + fColor*(1.0 - waterAlpha);\n\
       }                                               \n\
    }                                                  \n\
