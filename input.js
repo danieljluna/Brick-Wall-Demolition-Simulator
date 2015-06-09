@@ -120,6 +120,8 @@ function updateAngleSlider()
 function updateXSlider()
 {
    explosionDirection[0] = parseFloat(xSlider.value);
+   explosionDirection[1] = 1;
+   explosionDirection[2] = parseFloat(zSlider.value);
    //console.log(explosionDirection);
    xLabel.innerHTML = xSlider.value;
    resetObjects();
@@ -128,6 +130,8 @@ function updateXSlider()
 
 function updateZSlider()
 {
+   explosionDirection[0] = parseFloat(xSlider.value);
+   explosionDirection[1] = 1;
    explosionDirection[2] = parseFloat(zSlider.value);
    //console.log(explosionDirection);
    zLabel.innerHTML = zSlider.value.toString();
