@@ -29,6 +29,9 @@ var sZLabel;
 var sYSlider;
 var sYLabel;
 
+var doReflections;
+var reflectionCheckBox;
+
 //default cone globals ---- source, direction, angle, magnitude
 var explosionSource = vec3(0, -3, 1);
 //+right,,+up
