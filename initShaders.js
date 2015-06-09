@@ -14,6 +14,7 @@ vertexShaderSource = "\
    uniform mat4 worldViewMatrix;                      \n\
    uniform mat4 vecWorldViewMatrix;                   \n\
                                                       \n\
+   uniform vec4 objPos;                               \n\
    uniform vec4 eyeVec;                               \n\
    uniform vec4 lightVec;                             \n\
    uniform vec4 lightProperties;                      \n\
@@ -27,10 +28,6 @@ vertexShaderSource = "\
    {                                                  \n\
       //Get the current Position                      \n\
       vec4 pos = modelWorldMatrix * vPosition;        \n\
-                                                      \n\
-      //Pass Position to Fragment Shader              \n\
-      vec4 temp = worldViewMatrix * pos;              \n\
-      gl_Position = temp*vec4(1,1,0.1,1);             \n\
                                                       \n\
       //Calculate light vector                        \n\
       vec3 L = normalize((lightVec - pos).xyz);       \n\
@@ -62,11 +59,27 @@ vertexShaderSource = "\
       fColor.b = min(1.0, fColor.b);                  \n\
       fColor.a = min(1.0, fColor.a);                  \n\
                                                       \n\
-      //Handle Water Transparency Effects             \n\
-      if (pos.z < 0.0) {                              \n\
-         float waterAlpha = min(1.0, -pos.z*0.025 + .8);\n\
-         fColor = vec4(0, 0.1, 0.2, 1.0)*waterAlpha + fColor*(1.0 - waterAlpha);\n\
+      //Handle Water Effects                          \n\
+      if (!(reflectionRender)) {                      \n\
+         //Handle Transparency                        \n\
+         if (pos.z < 0.0) {                           \n\
+            float waterAlpha = min(1.0, -pos.z*0.025 + .8);                         \n\
+            fColor = vec4(0, 0.1, 0.2, 1.0)*waterAlpha + fColor*(1.0 - waterAlpha); \n\
+         }                                            \n\
+      } else {                                        \n\
+         //Handle Reflections                         \n\
+         float relativeZ = pos[2] - objPos[2];        \n\
+         pos[2] = -1.0 * pos[2];                      \n\
+         float t = -1.0 * pos[2] / E[2];              \n\
+         pos = (pos + t * vec4(E, 0));                \n\
+         pos[2] -= 0.01 * relativeZ;                  \n\
+         float waterAlpha = .3;                       \n\
+         fColor = vec4(0, 0.1, 0.2, 1.0)*waterAlpha + fColor*(1.0 - waterAlpha); \n\
       }                                               \n\
+                                                      \n\
+      //Pass Position to Fragment Shader              \n\
+      vec4 temp = worldViewMatrix * pos;              \n\
+      gl_Position = temp*vec4(1,1,0.1,1);             \n\
    }                                                  \n\
 ";
 

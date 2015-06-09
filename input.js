@@ -29,7 +29,7 @@ var sZLabel;
 var sYSlider;
 var sYLabel;
 
-var doReflections;
+var doReflections = true;
 var reflectionCheckBox;
 
 //default cone globals ---- source, direction, angle, magnitude

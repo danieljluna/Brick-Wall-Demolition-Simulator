@@ -24,6 +24,7 @@ var pointSize = 16;
 var doPerspective = true;
 
 //Stores the location of the modelViewMatrix in the shader
+var objPosLoc;
 var reflectionRenderLoc;
 var surfDiffuseLoc;
 var surfSpecularLoc;
@@ -138,6 +139,7 @@ window.onload = function init() {
    gl.uniform4fv(lightPropLoc, flatten(vec4(0.9, 0.9, 0.9, 1.0)));
    
    //Store Shading Variables
+   objPosLoc = gl.getUniformLocation(program, "objPos");
    reflectionRenderLoc = gl.getUniformLocation(program, "reflectionRender");
    surfDiffuseLoc = gl.getUniformLocation(program, "surfaceDiffuse");
    surfSpecularLoc = gl.getUniformLocation(program, "surfaceSpecular");
@@ -146,19 +148,22 @@ window.onload = function init() {
    modelWorldLoc = gl.getUniformLocation(program, "modelWorldMatrix");
    vecModelWorldLoc = gl.getUniformLocation(program, "vecModelWorldMatrix");
    
-   WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, false);
+   WATER_MODEL = createModel(WATER_COORD, WATER_POLY, vec4(0, 0, 0, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, false);
+   models[WATER_MODEL].surfaceAmbient = vec4(0.05, 0.3, 0.6, 1.0);
    createObject(WATER_MODEL, vec4(0, 0, -10), 0);
    
-   FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0.2, 0.6, 0.2, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
-   createObject(FLOOR_MODEL, vec4(0, 0, 0), 0);
+   FLOOR_MODEL = createModel(FLOOR_COORD, FLOOR_POLY, vec4(0, 0, 0, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
+   models[FLOOR_MODEL].surfaceAmbient = vec4(0.1, 0.25, 0.1, 1.0);
+   createObject(FLOOR_MODEL, vec4(0, 0, .1), 0);
    
-   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.8, 0.4, 0.4, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
-   BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .25, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
+   BRICK_MODEL = createModel(BRICK_COORD, BRICK_POLY, vec4(0.7, 0.35, 0.35, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
+   models[BRICK_MODEL].surfaceAmbient = vec4(.1, .05, .05, 1.0);
+   BRICK_START = createRows(BRICK_MODEL, 10, 9, vec4(0, 0, .35, 1), vec4(1.81, 0, 0, 0), vec4(0, 0, .55, 0));
    
    SPLASH_MODEL = createModel(SPLASH_COORD, SPLASH_POLY, vec4(0.05, 0.3, 0.6, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 15, true);
    
    BAZOOKA_MODEL = createModel(BAZOOKA_COORD, BAZOOKA_POLY, vec4(.8, .8, 0.8, 1.0), vec4(0.3, 0.3, 0.3, 1.0), 10, false);
-   createObject(BAZOOKA_MODEL, vec4(0,-5, 2), 0);
+   //createObject(BAZOOKA_MODEL, vec4(0,-5, 2), 0);
    resetObjects();
 };
 
@@ -174,10 +179,13 @@ function render() {
       objects[obj].draw(vBuffer, nBuffer);
    }
    
-   if (doReflections) {
+   if ((doReflections) && (timeSlider.value != "0")) {
       gl.uniform1f(reflectionRenderLoc, true);
       for (var obj = BRICK_START; (obj < objects.length) && (objects[obj].model != SPLASH_MODEL); ++obj) {
-         objects[obj].draw(vBuffer, nBuffer);
+         if ((objects[obj].dynamic) && (objects[obj].getPosition()[2] > 0)) {
+            gl.uniform4fv(objPosLoc, flatten(vec4(objects[obj].getPosition(), 0)));
+            objects[obj].draw(vBuffer, nBuffer);
+         }
       }
    }
 };

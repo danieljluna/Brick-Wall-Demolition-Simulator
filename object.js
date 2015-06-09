@@ -87,8 +87,7 @@ Object.prototype.draw = function(vBuffer, nBuffer) {
       
       //Send Shader modelViewMatrix and vecModelViewMatrix
       if (this.dynamic) {
-         var currentPos = add(this.position, scaleVec(thisTime, this.velocity));
-         currentPos = add(currentPos, scaleVec(.5*thisTime*thisTime, vec3(0, 0, -9.81)));
+         var currentPos = this.getPosition();
          translationMatrix = translate(currentPos);
       } else {
          translationMatrix = translate(this.position);
@@ -105,6 +104,14 @@ Object.prototype.draw = function(vBuffer, nBuffer) {
       
       models[this.model].draw(vBuffer, nBuffer);
    }
+};
+
+
+Object.prototype.getPosition = function() {
+   var thisTime = parseFloat(timeSlider.value) - this.initTime;
+   var currentPos = add(this.position, scaleVec(thisTime, this.velocity));
+   currentPos = add(currentPos, scaleVec(.5*thisTime*thisTime, vec3(0, 0, -9.81)));
+   return currentPos
 };
 
 
